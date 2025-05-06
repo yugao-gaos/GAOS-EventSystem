@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ScriptableObject Events - GAOS Event System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-advanced.css">
+    <style>
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .concept-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #4CAF50;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .concept-card h2 {
+            color: #4CAF50;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .concept-card h3 {
+            color: #2E7D32;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .concept-card pre {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .concept-card code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .info-box {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4CAF50;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info-box h4 {
+            color: #2E7D32;
+            margin-top: 0;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning-box h4 {
+            color: #F57F17;
+            margin-top: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-button {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .action-button:hover {
+            background: #2E7D32;
+        }
+
+        .diagram {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        table, th, td {
+            border: 1px solid #e0e0e0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ScriptableObject Events</h1>
+        <p>The ScriptableObject Event system provides a powerful way to create decoupled, inspector-configurable events in Unity. These events persist between scenes and play sessions, making them ideal for managing game state and communication between components.</p>
+    </div>
+
+    <div class="navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start.html">Quick Start</a></li>
+            <li><a href="advanced.html">Advanced Topics</a></li>
+            <li><a href="api.html">API Reference</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="concept-grid">
+            <!-- Overview Card -->
+            <div class="concept-card">
+                <h2>Overview and Benefits</h2>
+                <p>The ScriptableObject Event system builds on the core event system but provides additional benefits:</p>
+                
+                <ul>
+                    <li><strong>Persistence</strong>: SO events persist between scenes and across play sessions</li>
+                    <li><strong>Inspector Configurable</strong>: Events can be created and configured in the Unity Editor</li>
+                    <li><strong>Complete Decoupling</strong>: Components can communicate without direct references to each other</li>
+                    <li><strong>Simple Debugging</strong>: Event assets can be monitored in the editor during gameplay</li>
+                    <li><strong>Unity Integration</strong>: Bridges connect SO events to Unity's native event system</li>
+                </ul>
+
+                <div class="diagram">
+                    <pre>
+         ┌───────────────┐         ┌────────────────┐         ┌────────────────┐
+         │               │         │                │         │                │
+         │ UI Controller │         │  SOEvent Asset │         │    Processor   │
+         │               │─────────▶                ├────────▶│                │
+         └───────────────┘         └────────────────┘         └────────────────┘
+                                            ▲                          │
+                                            │                          │
+                                            └──────────────────────────┘
+                                              Response (via callback)                
+                    </pre>
+                </div>
+            </div>
+
+            <!-- Event Types Card -->
+            <div class="concept-card">
+                <h2>Available SO Event Types</h2>
+                <table>
+                    <tr>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Use Case</th>
+                    </tr>
+                    <tr>
+                        <td><code>SOVoidEvent</code></td>
+                        <td>Simple event with no parameters or return values</td>
+                        <td>Game state changes, notifications, triggers</td>
+                    </tr>
+                    <tr>
+                        <td><code>SODataEvent&lt;T&gt;</code></td>
+                        <td>Event with a parameter but no return value</td>
+                        <td>Sending data to multiple listeners</td>
+                    </tr>
+                    <tr>
+                        <td><code>SOEventBase&lt;TParam, TResult&gt;</code></td>
+                        <td>Event with parameter and return value</td>
+                        <td>Request-response patterns, data processing</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Creating Events Card -->
+            <div class="concept-card">
+                <h2>Creating ScriptableObject Events</h2>
+                <p>To create a new ScriptableObject event:</p>
+                
+                <ol>
+                    <li>Create a new script that inherits from the appropriate SO event base class</li>
+                    <li>Add the <code>[CreateAssetMenu]</code> attribute to make it available in the Unity Editor</li>
+                    <li>Right-click in the Project window and choose your event type from the Create menu</li>
+                </ol>
+
+                <h3>Simple Notification Event</h3>
+                <pre><code>using UnityEngine;
+using GAOS.EventSystem.ScriptableObjects;
+
+[CreateAssetMenu(fileName = "SimpleNotificationEvent", menuName = "GAOS/Events/Simple Notification")]
+public class SimpleNotificationEvent : SOVoidEvent
+{
+    // Inherits functionality from SOVoidEvent
+}</code></pre>
+
+                <h3>Calculation Event with Parameters and Results</h3>
+                <pre><code>using UnityEngine;
+using GAOS.EventSystem.ScriptableObjects;
+
+[CreateAssetMenu(fileName = "CalculationEvent", menuName = "GAOS/Events/Calculation Event")]
+public class CalculationEvent : SOEventBase&lt;ICalculationRequest, ICalculationResult&gt;
+{
+    // Inherits functionality from SOEventBase
+}</code></pre>
+            </div>
+
+            <!-- Event Bridges Card -->
+            <div class="concept-card">
+                <h2>Event Bridges</h2>
+                <p>
+                    Event bridges connect ScriptableObject events to UnityEvents, allowing you to configure connections in the Inspector.
+                    This completely decouples your components, as they don't need direct references to each other.
+                </p>
+
+                <h3>Bridge Types</h3>
+                <ul>
+                    <li><code>SOVoidEventBridge</code>: For events with no parameters</li>
+                    <li><code>SODataEventBridge&lt;TParam, TUnityEvent&gt;</code>: For events with parameters</li>
+                    <li><code>SORequestResponseEventBridge&lt;TSOEvent, TParam, TResult&gt;</code>: For events with parameters and return values</li>
+                </ul>
+
+                <h3>Simple Notification Bridge</h3>
+                <pre><code>using UnityEngine;
+using GAOS.EventSystem.MonoBehaviours;
+
+[AddComponentMenu("GAOS/Events/Simple Notification Bridge")]
+public class SimpleNotificationBridge : SOVoidEventBridge
+{
+    // Inherits functionality from SOVoidEventBridge
+}</code></pre>
+
+                <div class="info-box">
+                    <h4>Note:</h4>
+                    <p>Bridges automatically subscribe to events in OnEnable() and unsubscribe in OnDisable(), ensuring proper cleanup and preventing memory leaks.</p>
+                </div>
+            </div>
+
+            <!-- Using Events Card -->
+            <div class="concept-card">
+                <h2>Using ScriptableObject Events</h2>
+                
+                <h3>Raising Events</h3>
+                <pre><code>// Simple event with no parameters
+[SerializeField] private SimpleNotificationEvent notificationEvent;
+
+public void SendNotification()
+{
+    if (notificationEvent != null)
+    {
+        notificationEvent.Raise();
+    }
+}
+
+// Event with parameter and async result
+[SerializeField] private CalculationEvent calculationEvent;
+
+public async void PerformCalculation(int valueA, int valueB, string operation)
+{
+    var request = new CalculationRequest(valueA, valueB, operation);
+    var trigger = await calculationEvent.RaiseAsync(request);
+    
+    if (trigger.CompletedResults.Count > 0)
+    {
+        var result = trigger.CompletedResults[0];
+        Debug.Log($"Result: {result.Result}");
+    }
+}</code></pre>
+
+                <h3>Connecting Events in the Inspector</h3>
+                <ol>
+                    <li>Create ScriptableObject event assets in your project (SimpleNotificationEvent, CalculationEvent, etc.)</li>
+                    <li>Add bridge components to your GameObjects (SOVoidEventBridge, SODataEventBridge, SORequestResponseEventBridge, etc.)</li>
+                    <li>Assign the SO events to the bridges using the Inspector</li>
+                    <li>Connect the bridge's UnityEvents to handler methods on other components</li>
+                </ol>
+            </div>
+
+            <!-- Decoupled Architectures Card -->
+            <div class="concept-card">
+                <h2>Creating Decoupled Architectures</h2>
+                <p>
+                    The SO Event system enables you to create fully decoupled architectures where components have zero direct references to each other.
+                    This makes your code more modular, testable, and easier to maintain.
+                </p>
+
+                <h3>Benefits of Decoupling</h3>
+                <ul>
+                    <li><strong>Modularity</strong>: Components can be developed, tested, and modified independently</li>
+                    <li><strong>Reusability</strong>: Components can be reused across different scenes and projects</li>
+                    <li><strong>Flexibility</strong>: Components can be connected and reconfigured in the Editor without changing code</li>
+                    <li><strong>Testability</strong>: Components can be tested in isolation with mock event data</li>
+                </ul>
+
+                <h3>Decoupled Component Architecture</h3>
+                <pre><code>// UI Controller
+public class UIController : MonoBehaviour
+{
+    [SerializeField] private SimpleNotificationEvent notificationEvent;
+    
+    public void OnButtonClick()
+    {
+        notificationEvent.Raise();
+    }
+}
+
+// Bridge Component
+public class NotificationBridge : SOVoidEventBridge
+{
+    // SOVoidEventBridge handles subscription and forwarding to UnityEvents
+}
+
+// Processor Component
+public class NotificationProcessor : MonoBehaviour
+{
+    // This method is connected to the bridge's UnityEvent in the Inspector
+    public void HandleNotification()
+    {
+        Debug.Log("Notification received!");
+    }
+}</code></pre>
+            </div>
+
+            <!-- Async Events Card -->
+            <div class="concept-card">
+                <h2>Asynchronous SO Events</h2>
+                <p>
+                    ScriptableObject events also support asynchronous operations, allowing you to perform long-running tasks
+                    and receive results when they complete.
+                </p>
+
+                <h3>Async Event Processing</h3>
+                <pre><code>// Calculation processor
+public void ProcessCalculation(ICalculationRequest request, Action&lt;ICalculationResult&gt; callback)
+{
+    // Perform calculation
+    float result = PerformOperation(request);
+    
+    // Return result via callback
+    callback(new CalculationResult(result, true));
+}
+
+// UI Controller
+public async void RequestCalculation()
+{
+    var request = new CalculationRequest(10, 5, "multiply");
+    var trigger = await calculationEvent.RaiseAsync(request);
+    
+    // Check if we got any results
+    if (trigger.HasCompletedResults)
+    {
+        var result = trigger.CompletedResults[0];
+        UpdateUI(result);
+    }
+}</code></pre>
+
+                <h3>Using Bridges for Async Processing</h3>
+                <p>
+                    When using event bridges, the system automatically converts between TaskCompletionSource and Action-based callbacks,
+                    allowing you to use async/await in your event-raising code while still using Inspector-connected handlers.
+                </p>
+                
+                <pre><code>// Request Response bridge setup
+[SerializeField] private SORequestResponseEventBridge calculationBridge;
+
+// In your handler method (connected via Inspector):
+public void HandleCalculation(ICalculationRequest request, Action&lt;ICalculationResult&gt; callback)
+{
+    StartCoroutine(PerformCalculationAsync(request, callback));
+}
+
+private IEnumerator PerformCalculationAsync(ICalculationRequest request, Action&lt;ICalculationResult&gt; callback)
+{
+    // Simulate async work
+    yield return new WaitForSeconds(1f);
+    
+    // Return result
+    var result = new CalculationResult(request.ValueA * request.ValueB, true);
+    callback(result);
+}</code></pre>
+            </div>
+
+            <!-- Advanced Usage Card -->
+            <div class="concept-card">
+                <h2>Advanced Usage</h2>
+                
+                <h3>Multiple Handlers</h3>
+                <p>
+                    SO events support multiple handlers, each producing its own result. This allows for distributed processing
+                    where different subsystems can contribute to the response.
+                </p>
+                
+                <h3>Priority-Based Execution</h3>
+                <p>
+                    When subscribing to events, you can specify a priority value to control the order of execution.
+                    Higher priority handlers are executed first.
+                </p>
+                
+                <pre><code>// Subscribe with priority
+calculationEvent.Subscribe(HandleHighPriorityCalculation, 100);
+calculationEvent.Subscribe(HandleMediumPriorityCalculation, 50);
+calculationEvent.Subscribe(HandleLowPriorityCalculation, 0);
+
+// The results will be ordered by priority in the CompletedResults list</code></pre>
+                
+                <h3>Event Debugging</h3>
+                <p>
+                    Because SO events are assets in your project, you can select them during play mode to inspect their current state,
+                    making debugging much easier.
+                </p>
+
+                <div class="info-box">
+                    <h4>Advanced Tip:</h4>
+                    <p>Consider creating a debug panel that displays the last few events that were raised, along with their parameters and results. This can be invaluable for tracking down complex event-related bugs.</p>
+                </div>
+            </div>
+            
+            <!-- Best Practices Card -->
+            <div class="concept-card">
+                <h2>Best Practices</h2>
+                
+                <ul>
+                    <li><strong>Organize Events by Domain</strong>: Create folders that group related events (UI, Gameplay, Audio, etc.)</li>
+                    <li><strong>Name Events Clearly</strong>: Use descriptive names (PlayerDied, QuestCompleted, etc.)</li>
+                    <li><strong>Document Event Contracts</strong>: Add comments explaining what data each event expects/provides</li>
+                    <li><strong>Create Custom Event Types</strong>: For complex systems, create your own event types that inherit from SOEventBase</li>
+                    <li><strong>Consider Event Performance</strong>: For very frequent events (like per-frame updates), use direct function calls instead</li>
+                    <li><strong>Use Request/Response Pattern</strong>: For operations that need results, use events with parameters and return values</li>
+                </ul>
+                
+                <div class="warning-box">
+                    <h4>Warning</h4>
+                    <p>Avoid creating cyclic dependencies between events. If Event A triggers Event B which triggers Event A again, you can create infinite loops.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Version 0.8.0 | <a href="../CHANGELOG.md">Changelog</a> | Created by <a href="https://www.linkedin.com/in/yugao-luckyvr">Yu Gao</a></p>
+    </div>
+</body>
+</html> 

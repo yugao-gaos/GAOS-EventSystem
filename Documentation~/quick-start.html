@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Quick Start - GAOS Event System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-advanced.css">
+    <style>
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .concept-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #4CAF50;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .concept-card h2 {
+            color: #4CAF50;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .concept-card h3 {
+            color: #2E7D32;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .concept-card pre {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .concept-card code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .info-box {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4CAF50;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info-box h4 {
+            color: #2E7D32;
+            margin-top: 0;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-button {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .action-button:hover {
+            background: #2E7D32;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Quick Start Guide</h1>
+        <p>Get started with GAOS Event System in minutes. This guide will show you how to use the event system for basic event handling, data passing, and more.</p>
+    </div>
+
+    <div class="navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="advanced.html">Advanced Topics</a></li>
+            <li><a href="api.html">API Reference</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="concept-grid">
+            <!-- Installation Card -->
+            <div class="concept-card">
+                <h2>Installation</h2>
+                <p>The GAOS Event System is automatically registered as a service in your Unity project through the ServiceLocator system. No manual installation is required beyond importing the package:</p>
+                <pre><code>com.gaos.eventsystem</code></pre>
+                
+                <div class="info-box">
+                    <h4>Package Dependencies</h4>
+                    <ul>
+                        <li>com.gaos.servicelocator</li>
+                        <li>com.unity.nuget.newtonsoft-json</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Basic Usage Card -->
+            <div class="concept-card">
+                <h2>Basic Usage</h2>
+                <p>Let's create a simple event that notifies when a game starts.</p>
+                
+                <h3>1. Get Event System</h3>
+                <p>First, get the event system instance:</p>
+                <pre><code>// Get the event system service
+IEventSystem eventSystem = ServiceLocator.GetService&lt;IEventSystem&gt;("EventSystem");
+
+// Or use the static instance if available in your project
+// EventSystem.Instance</code></pre>
+
+                <h3>2. Register Event</h3>
+                <p>Register a simple event with no parameters:</p>
+                <pre><code>// Register a simple event
+eventSystem.RegisterEvent("OnGameStart");</code></pre>
+
+                <h3>3. Subscribe to Event</h3>
+                <p>Add an event listener:</p>
+                <pre><code>// Subscribe to the event
+eventSystem.Subscribe("OnGameStart", () => {
+    Debug.Log("Game has started!");
+});</code></pre>
+
+                <h3>4. Trigger Event</h3>
+                <p>Trigger the event from anywhere in your code:</p>
+                <pre><code>// Trigger the event
+eventSystem.TriggerEvent("OnGameStart");</code></pre>
+            </div>
+
+            <!-- Complete Example Card -->
+            <div class="concept-card">
+                <h2>Complete Example</h2>
+                <p>Here's a simple example showing how to integrate the event system in a MonoBehaviour:</p>
+                
+                <pre><code>using UnityEngine;
+using GAOS.Events;
+using GAOS.ServiceLocator;
+
+public class GameController : MonoBehaviour
+{
+    private IEventSystem _eventSystem;
+
+    void Start()
+    {
+        // Get event system
+        _eventSystem = ServiceLocator.GetService&lt;IEventSystem&gt;("EventSystem");
+        
+        // Register event
+        _eventSystem.RegisterEvent("OnGameStart");
+        
+        // Subscribe to event
+        _eventSystem.Subscribe("OnGameStart", () => {
+            Debug.Log("Game has started!");
+        });
+    }
+
+    public void StartGame()
+    {
+        // Trigger the event
+        _eventSystem.TriggerEvent("OnGameStart");
+    }
+    
+    void OnDestroy() 
+    {
+        // Best practice: unsubscribe when component is destroyed
+        if (_eventSystem != null) {
+            _eventSystem.UnsubscribeAll(this);
+        }
+    }
+}</code></pre>
+            </div>
+
+            <!-- Next Steps Card -->
+            <div class="concept-card">
+                <h2>Next Steps</h2>
+                <p>Now that you've learned the basics, explore more advanced features of the Event System:</p>
+                
+                <div class="info-box">
+                    <h4>Advanced Topics</h4>
+                    <ul>
+                        <li>Events with Parameters</li>
+                        <li>Events with Return Values</li>
+                        <li>Events with Parameters and Return Values</li>
+                        <li>Asynchronous Event Handling</li>
+                        <li>Progress Tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="advanced.html" class="action-button">Advanced Topics</a>
+                    <a href="api.html" class="action-button">API Reference</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Version 0.8.0 | <a href="../CHANGELOG.md">Changelog</a> | Created by <a href="https://www.linkedin.com/in/yugao-luckyvr">Yu Gao</a></p>
+    </div>
+</body>
+</html> 

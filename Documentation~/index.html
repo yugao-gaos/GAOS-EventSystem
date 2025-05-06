@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>GAOS Event System Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-advanced.css">
+    <style>
+        /* Main content container */
+        body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Features grid styling */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: #2196F3;
+        }
+
+        .feature-card ul {
+            list-style-type: disc;
+            padding: 0 0 0 2rem;
+            margin: 0;
+        }
+
+        .feature-card li {
+            margin: 0.8rem 0;
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        .feature-card li::before {
+            display: none;
+        }
+
+        /* Documentation cards styling */
+        .doc-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 992px) {
+            .doc-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .doc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .doc-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .doc-card-content {
+            padding: 2rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 300px;
+        }
+
+        .doc-card h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.4rem;
+            height: auto;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .doc-card h3 a {
+            color: #2196F3;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .doc-card h3 a:hover {
+            color: #1976D2;
+        }
+
+        .doc-card p {
+            margin: 0 0 1.5rem 0;
+            color: #495057;
+            line-height: 1.6;
+            flex-shrink: 0;
+        }
+
+        .doc-card ul {
+            list-style-type: disc;
+            padding: 0 0 0 2rem;
+            margin: 0;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .doc-card li {
+            margin: 0.5rem 0;
+            color: #495057;
+            line-height: 1.5;
+        }
+
+        .doc-card li:first-child {
+            margin-top: 0;
+        }
+
+        .doc-card li:last-child {
+            margin-bottom: 0;
+        }
+
+        .quickstart-card::before {
+            background: #2196F3;
+        }
+
+        .concepts-card::before {
+            background: #4CAF50;
+        }
+
+        .soevents-card::before {
+            background: #9C27B0;
+        }
+
+        .quickstart-card h3 {
+            color: #2196F3;
+        }
+
+        .concepts-card h3 {
+            color: #4CAF50;
+        }
+
+        .soevents-card h3 {
+            color: #9C27B0;
+        }
+
+        .doc-button {
+            display: block;
+            padding: 1rem;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            transition: background-color 0.3s ease;
+            margin-top: auto;
+        }
+
+        .quickstart-card .doc-button {
+            background: #2196F3;
+        }
+
+        .quickstart-card .doc-button:hover {
+            background: #1976D2;
+        }
+
+        .concepts-card .doc-button {
+            background: #4CAF50;
+        }
+
+        .concepts-card .doc-button:hover {
+            background: #388E3C;
+        }
+
+        .soevents-card .doc-button {
+            background: #9C27B0;
+        }
+
+        .soevents-card .doc-button:hover {
+            background: #7B1FA2;
+        }
+
+        /* Section dividers */
+        .separator {
+            margin: 4rem auto;
+            height: 1px;
+            background: #e9ecef;
+            max-width: 100%;
+        }
+
+        /* API section styling */
+        .api-section {
+            padding: 3rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin: 3rem auto;
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .api-section h2 {
+            color: #2196F3;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .api-section p {
+            color: #495057;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .api-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .api-button:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+        }
+
+        /* Header and footer styling */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #2196F3;
+            margin-bottom: 1rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #495057;
+            margin: 0 auto;
+        }
+
+        /* Section headings */
+        section h2 {
+            color: #2196F3;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        section p {
+            color: #495057;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GAOS Event System</h1>
+        <p>A powerful, type-safe event system for Unity with async support and cancellation. Read the <a href="development-story.html" style="color: #2196F3; text-decoration: none; background: rgba(33, 150, 243, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px;">development story</a> to learn about the journey and philosophy behind this package.</p>
+    </header>
+
+    <div class="separator"></div>
+
+    <section id="introduction">
+        <h2>Introduction</h2>
+        <p>The GAOS Event System provides a robust event management solution built specifically for Unity. It seamlessly integrates with Unity's component lifecycle while delivering type-safe event handling, async support, and flexible event configurations—all with an intuitive API that's easy to use and maintain.</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>Type-Safe Events</h3>
+                <ul>
+                    <li>Compile-time type checking</li>
+                    <li>Interface-based event data</li>
+                    <li>Strongly-typed event handlers</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Async Support</h3>
+                <ul>
+                    <li>Asynchronous event handling</li>
+                    <li>Progress tracking</li>
+                    <li>Cancellation support</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>Developer Experience</h3>
+                <ul>
+                    <li>Priority-based execution</li>
+                    <li>Comprehensive error handling</li>
+                    <li>ServiceLocator integration</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <div class="separator"></div>
+
+    <section id="documentation-sections" class="doc-grid">
+        <div class="doc-card quickstart-card">
+            <div class="doc-card-content">
+                <h3>Quick Start Guide</h3>
+                <p>Get started with Event System in minutes. Perfect for developers who want to quickly integrate event handling into their Unity projects.</p>
+                <ul>
+                    <li>Simple event registration</li>
+                    <li>Basic event subscription</li>
+                    <li>Event triggering examples</li>
+                </ul>
+            </div>
+            <a href="quick-start.html" class="doc-button">Get Started →</a>
+        </div>
+
+        <div class="doc-card concepts-card">
+            <div class="doc-card-content">
+                <h3>Advanced Topics</h3>
+                <p>Learn about the fundamental concepts and architecture of the event system.</p>
+                <ul>
+                    <li>Basic Usage</li>
+                    <li>Events with Parameters</li>
+                    <li>Events with Return Values</li>
+                    <li>Combined Events (Parameters & Returns)</li>
+                    <li>Asynchronous Event Handling</li>
+                    <li>Progress Tracking</li>
+                </ul>
+            </div>
+            <a href="advanced.html" class="doc-button">Learn More →</a>
+        </div>
+
+        <div class="doc-card soevents-card">
+            <div class="doc-card-content">
+                <h3>ScriptableObject Events</h3>
+                <p>Create decoupled, inspector-configurable events that persist across scenes and play sessions.</p>
+                <ul>
+                    <li>SO Event Types</li>
+                    <li>Event Bridges</li>
+                    <li>Connecting with UnityEvents</li>
+                    <li>Creating Decoupled Architectures</li>
+                    <li>Asynchronous SO Events</li>
+                    <li>Best Practices</li>
+                </ul>
+            </div>
+            <a href="soevents.html" class="doc-button">Explore →</a>
+        </div>
+    </section>
+
+    <div class="separator"></div>
+
+    <section id="api-documentation" class="api-section">
+        <h2>API Documentation</h2>
+        <p>Complete reference documentation for the Event System</p>
+        <a href="api.html" class="api-button">View Full API Reference →</a>
+    </section>
+
+    <div class="separator"></div>
+
+    <footer>
+        <p>Version 0.8.0 | <a href="../CHANGELOG.md">View Changelog</a> | Created by <a href="https://www.linkedin.com/in/yugao-luckyvr">Yu Gao</a></p>
+    </footer>
+</body>
+</html> 

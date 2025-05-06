@@ -1,0 +1,34 @@
+{
+  "name": "com.gaos.eventsystem",
+  "displayName": "GAOS Event System",
+  "version": "0.8.0",
+  "unity": "2021.3",
+  "description": "A type-safe event system with synchronous and asynchronous support for Unity.",
+  "author": {
+    "name": "YU GAO",
+    "email": "yu.gao@gaos.ca",
+    "url": "https://gaos.ca"
+  },
+  "dependencies": {
+    "com.gaos.servicelocator": "0.1.0",
+    "com.unity.nuget.newtonsoft-json": "3.0.2"
+  },
+  "license": "MIT",
+  "samples": [
+    {
+      "displayName": "Basic Events",
+      "description": "Demonstrates how to use the basic event system features",
+      "path": "Samples~/BasicEvents"
+    },
+    {
+      "displayName": "ScriptableObject Events",
+      "description": "Shows how to use ScriptableObject-based events with Unity Events",
+      "path": "Samples~/ScriptableObjectEvents"
+    },
+    {
+      "displayName": "Simple GameObject Events",
+      "description": "Demonstrates basic communication between two GameObjects using events",
+      "path": "Samples~/SimpleGameObjectEvents"
+    }
+  ]
+}

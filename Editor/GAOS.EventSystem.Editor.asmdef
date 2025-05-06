@@ -1,0 +1,9 @@
+{
+  "name": "GAOS.EventSystem.Editor",
+  "rootNamespace": "GAOS.EventSystem.Editor",
+  "references": ["GAOS.EventSystem.Runtime"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

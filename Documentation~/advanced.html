@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Advanced Topics - GAOS Event System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-advanced.css">
+    <style>
+        .concept-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .concept-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #4CAF50;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .concept-card h2 {
+            color: #4CAF50;
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .concept-card h3 {
+            color: #2E7D32;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .concept-card pre {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .concept-card code {
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .info-box {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4CAF50;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .info-box h4 {
+            color: #2E7D32;
+            margin-top: 0;
+        }
+
+        .info-box ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .best-practices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .practice-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .practice-card h3 {
+            color: #2E7D32;
+            margin-top: 0;
+        }
+
+        .practice-card ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .best-practices-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Advanced Topics</h1>
+        <p>The GAOS Event System provides a flexible and type-safe way to handle events in your Unity projects. Events can be simple notifications, carry data parameters, return results, or both. The system supports both synchronous and asynchronous execution with progress tracking.</p>
+    </div>
+
+    <div class="navigation">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="quick-start.html">Quick Start</a></li>
+            <li><a href="api.html">API Reference</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="concept-grid">
+            <!-- Basic Usage Card -->
+            <div class="concept-card">
+                <h2>Basic Usage</h2>
+                <p>Get started with simple void events that don't require parameters or return values. For a more detailed introduction, check out the <a href="quick-start.html">Quick Start Guide</a>.</p>
+
+                <pre><code>// Get the event system using ServiceLocator
+IEventSystem eventSystem = ServiceLocator.GetService&lt;IEventSystem&gt;("EventSystem");
+
+// Register a void event
+eventSystem.RegisterEvent("OnGameStart");
+
+// Subscribe to the event
+eventSystem.Subscribe("OnGameStart", () => {
+    Debug.Log("Game started!");
+}, priority: 100);
+
+// Trigger the event
+eventSystem.TriggerEvent("OnGameStart");</code></pre>
+
+                <div class="info-box">
+                    <h4>Priority-Based Execution</h4>
+                    <ul>
+                        <li>Higher numbers execute first (e.g., 100 before 0)</li>
+                        <li>Default priority is 0</li>
+                        <li>Negative priorities execute last</li>
+                        <li>Same priority executes in subscription order</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Events with Parameters Card -->
+            <div class="concept-card">
+                <h2>Events with Parameters</h2>
+                <p>Send data along with your events using strongly-typed parameters. All parameter types must implement IDataInterface.</p>
+
+                <pre><code>// Define event parameters - MUST implement IDataInterface
+public interface IPlayerData : IDataInterface
+{
+    string PlayerName { get; }
+    int Score { get; }
+}
+
+// Implement the interface
+public class PlayerData : IPlayerData
+{
+    public string PlayerName { get; set; }
+    public int Score { get; set; }
+}
+
+// ❌ WRONG - This registers a void event without parameters
+EventSystem.RegisterEvent("OnScoreChanged");
+
+// ✅ CORRECT - This registers an event with IPlayerData parameter
+EventSystem.RegisterEvent&lt;IPlayerData&gt;("OnScoreChanged");
+
+// Subscribe with parameter handling
+EventSystem.Subscribe("OnScoreChanged", (IPlayerData data) => {
+    Debug.Log($"Player {data.PlayerName} scored {data.Score} points!");
+});
+
+// Trigger with parameters
+EventSystem.TriggerEvent&lt;IPlayerData&gt;("OnScoreChanged", new PlayerData {
+    PlayerName = "Player1",
+    Score = 100
+});</code></pre>
+
+                <div class="info-box">
+                    <h4>Type Safety Requirements</h4>
+                    <ul>
+                        <li>All parameter types must implement IDataInterface</li>
+                        <li>Must explicitly specify the parameter type in RegisterEvent&lt;T&gt;</li>
+                        <li>Use interfaces for parameters to maintain loose coupling</li>
+                        <li>Implement the interface in concrete classes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Events with Return Values Card -->
+            <div class="concept-card">
+                <h2>Events with Return Values</h2>
+                <p>Receive data back from event handlers. All return types must implement IDataInterface.</p>
+
+                <pre><code>// Define return type - MUST implement IDataInterface
+public interface IValidationResult : IDataInterface
+{
+    bool IsValid { get; }
+    string Message { get; }
+}
+
+// Implement the interface
+public class ValidationResult : IValidationResult
+{
+    public bool IsValid { get; set; }
+    public string Message { get; set; }
+}
+
+// ❌ WRONG - This registers a void event without return type
+EventSystem.RegisterEvent("ValidateAction");
+
+// ❌ WRONG - This registers an event with parameter, not return type
+EventSystem.RegisterEvent&lt;IValidationResult&gt;("ValidateAction");
+
+// ✅ CORRECT - This registers an event with void parameter and IValidationResult return type
+EventSystem.RegisterEvent&lt;void, IValidationResult&gt;("ValidateAction");
+
+// Subscribe with return value
+EventSystem.Subscribe("ValidateAction", () => {
+    return new ValidationResult {
+        IsValid = true,
+        Message = "Action validated"
+    };
+});
+
+// Trigger and get results
+IValidationResult result = await EventSystem.TriggerEventAsync&lt;void, IValidationResult&gt;("ValidateAction");</code></pre>
+
+                <div class="info-box">
+                    <h4>Return Type Requirements</h4>
+                    <ul>
+                        <li>All return types must implement IDataInterface</li>
+                        <li>Must use both generic parameters: RegisterEvent&lt;TParam, TReturn&gt;</li>
+                        <li>Use void as first parameter when no input parameter is needed</li>
+                        <li>Return types are always handled asynchronously</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Combined Events Card -->
+            <div class="concept-card">
+                <h2>Events with Parameters and Return Values</h2>
+                <p>Send data and receive results in the same event. Both parameter and return types must implement IDataInterface.</p>
+
+                <pre><code>// Parameter and return type interfaces
+public interface IPlayerData : IDataInterface
+{
+    string PlayerName { get; }
+    int Score { get; }
+}
+
+public interface IValidationResult : IDataInterface
+{
+    bool IsValid { get; }
+    string Message { get; }
+}
+
+// ❌ WRONG - This registers a void event without parameters or return type
+EventSystem.RegisterEvent("ValidateScore");
+
+// ❌ WRONG - This only registers an event with parameter type
+EventSystem.RegisterEvent&lt;IPlayerData&gt;("ValidateScore");
+
+// ❌ WRONG - This only registers an event with parameter type, not return type
+EventSystem.RegisterEvent&lt;IValidationResult&gt;("ValidateScore");
+
+// ✅ CORRECT - Register with both parameter and return types
+EventSystem.RegisterEvent&lt;IPlayerData, IValidationResult&gt;("ValidateScore");
+
+// Subscribe with both parameter and return value
+EventSystem.Subscribe("ValidateScore", (IPlayerData data) => {
+    return new ValidationResult {
+        IsValid = data.Score >= 0,
+        Message = data.Score >= 0 ? "Valid score" : "Score cannot be negative"
+    };
+});
+
+// Trigger and handle both parameter and return value
+IValidationResult result = await EventSystem.TriggerEventAsync&lt;IPlayerData, IValidationResult&gt;("ValidateScore", 
+    new PlayerData { 
+        PlayerName = "Player1", 
+        Score = 100 
+    });</code></pre>
+
+                <div class="info-box">
+                    <h4>Combined Event Requirements</h4>
+                    <ul>
+                        <li>Both parameter and return types must implement IDataInterface</li>
+                        <li>Must specify both types: RegisterEvent&lt;TParam, TReturn&gt;</li>
+                        <li>Parameter type goes first, return type second</li>
+                        <li>Cannot use void for parameter type when using combined events</li>
+                        <li>Combined events are always handled asynchronously</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Async Events Card -->
+            <div class="concept-card">
+                <h2>Asynchronous Event Handling</h2>
+                <p>Handle long-running operations with async event handlers.</p>
+
+                <pre><code>// Register async event
+EventSystem.RegisterEvent&lt;IPlayerData, IValidationResult&gt;("ValidateScoreAsync");
+
+// Subscribe with async handler
+EventSystem.Subscribe("ValidateScoreAsync", async (IPlayerData data) => {
+    await Task.Delay(1000); // Simulate network request
+    return new ValidationResult {
+        IsValid = true,
+        Message = "Validated after server check"
+    };
+});
+
+// Trigger async event
+IValidationResult result = await EventSystem.TriggerEventAsync&lt;IPlayerData, IValidationResult&gt;("ValidateScoreAsync", 
+    new PlayerData { PlayerName = "Player1", Score = 100 });</code></pre>
+            </div>
+
+            <!-- Progress Tracking Card -->
+            <div class="concept-card">
+                <h2>Progress Tracking</h2>
+                <p>Monitor the progress of event handlers as they complete.</p>
+
+                <pre><code>// Subscribe multiple handlers
+EventSystem.Subscribe("ProcessData", async (IPlayerData data) => {
+    await Task.Delay(1000); // First processor
+    return new ValidationResult { IsValid = true };
+}, priority: 100);
+
+EventSystem.Subscribe("ProcessData", async (IPlayerData data) => {
+    await Task.Delay(500); // Second processor
+    return new ValidationResult { IsValid = true };
+}, priority: 0);
+
+// Trigger with progress tracking
+await EventSystem.TriggerEventAsync&lt;IPlayerData, IValidationResult&gt;("ProcessData", 
+    new PlayerData { PlayerName = "Player1", Score = 100 },
+    async (result, current, total) => {
+        float progress = (float)current / total;
+        Debug.Log($"Processing: {progress:P0} complete");
+        // Example output:
+        // "Processing: 50% complete" (after first handler)
+        // "Processing: 100% complete" (after second handler)
+    });</code></pre>
+            </div>
+
+            <!-- Next Steps Card -->
+            <div class="concept-card">
+                <h2>Next Steps</h2>
+                <p>Now that you understand the advanced topics, you can:</p>
+                <ul>
+                    <li>Check out the <a href="quick-start.html">Quick Start Guide</a> for practical examples</li>
+                    <li>Explore the <a href="api.html">API Reference</a> for detailed documentation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Version 0.8.0 | <a href="../CHANGELOG.md">Changelog</a> | Created by <a href="https://www.linkedin.com/in/yugao-luckyvr">Yu Gao</a></p>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development Story - GAOS Event System</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .story-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .story-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--background-color);
+            border-radius: 8px;
+        }
+
+        .author-info img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .author-info .details {
+            flex-grow: 1;
+        }
+
+        .author-info h3 {
+            color: var(--primary-color);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .problem-solution {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .problem-box, .solution-box {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem;
+            border-radius: 8px;
+            background: var(--background-color);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 2rem;
+            padding: 1rem 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .problem-solution {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Documentation</a>
+
+        <header>
+            <h1>Development Story</h1>
+            <p>GAOS Event System: Bridging Editor and Code</p>
+        </header>
+
+        <div class="author-info">
+            <img src="https://media.licdn.com/dms/image/v2/D5603AQF_aMIMyqKpEw/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1679746789475?e=1746057600&v=beta&t=jT0W3KeeLZZyXprr5JTY3_rH4fkoR9GcygW8ZG9A1Ig" alt="Yu Gao" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%23e0e0e0%22/></svg>'">
+            <div class="details">
+                <h3>Yu Gao</h3>
+                <p>Creator of GAOS Event System</p>
+                <a href="https://www.linkedin.com/in/yugao-luckyvr" target="_blank">Connect on LinkedIn</a>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <h2>The Challenge</h2>
+            
+            <p>Traditional ScriptableObject event systems in Unity have always presented a dilemma: great for editor workflows but difficult to use programmatically. The lack of async support further limited their usefulness in modern development scenarios.</p>
+
+            <div class="problem-solution">
+                <div class="problem-box">
+                    <h3>Limitations</h3>
+                    <ul>
+                        <li>Poor code-level access</li>
+                        <li>No async support</li>
+                        <li>Limited type safety</li>
+                        <li>No progress tracking</li>
+                    </ul>
+                </div>
+                
+                <div class="solution-box">
+                    <h3>Solution</h3>
+                    <ul>
+                        <li>Unified code/editor API</li>
+                        <li>First-class async/await</li>
+                        <li>Complete type safety</li>
+                        <li>Progress tracking & cancellation</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p>This event system finally bridges both worlds: the convenience of SO events with the power of code-based events, plus proper async support.</p>
+        </div>
+
+        <div class="story-section">
+            <h2>AI-Assisted Development</h2>
+            
+            <p>Built with Claude's assistance, this system was developed through a collaborative process where AI handled implementation details while I focused on architectural decisions and Unity-specific requirements.</p>
+            
+            <p>We used a test-driven approach to ensure robustness across event registration, type constraints, async handling, cancellation, and ScriptableObject integration.</p>
+        </div>
+
+        <div class="story-section">
+            <h2>Real-World Use</h2>
+            
+            <p>The system excels in scenarios like:</p>
+            
+            <ul>
+                <li><strong>Game State Management</strong> with progress reporting</li>
+                <li><strong>Cloud Integration</strong> via async events with tracking</li>
+                <li><strong>Editor Tools</strong> that work seamlessly in both contexts</li>
+            </ul>
+            
+            <p>It "just works" - whether from code or inspector, synchronously or asynchronously.</p>
+        </div>
+
+        <footer>
+            <p><a href="index.html">Back to Documentation</a> | <a href="api.html">API Documentation</a></p>
+        </footer>
+    </div>
+</body>
+</html> 

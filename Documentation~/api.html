@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAOS Event System - API Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Main content container */
+        body {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .api-container {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            width: 340px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 2rem;
+            max-height: calc(100vh - 4rem);
+            overflow-y: auto;
+            padding-right: 0;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar-nav {
+            padding: 0;
+        }
+
+        .sidebar-nav h3 {
+            color: #2196F3;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0 1.5rem;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin: 0;
+        }
+
+        .nav-item {
+            position: relative;
+            display: block;
+            margin: 0;
+            padding: 0;
+            border-radius: 6px;
+        }
+
+        .nav-item:hover {
+            background: rgba(33, 150, 243, 0.1);
+            border-radius: 6px;
+        }
+
+        .nav-item a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: #495057;
+            text-decoration: none;
+            text-align: right;
+            white-space: normal;
+            word-wrap: break-word;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            font-family: 'Consolas', 'Monaco', monospace;
+            transition: all 0.2s;
+        }
+
+        .nav-item.active {
+            background: #2196F3;
+            border-radius: 6px;
+        }
+
+        .nav-item.active a {
+            color: white;
+        }
+
+        .method-name {
+            display: inline-block;
+        }
+
+        .generic {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #666;
+            display: inline-block;
+        }
+
+        .content {
+            flex: 1;
+            max-width: 900px;
+            line-height: 1.6;
+        }
+
+        .method {
+            margin-bottom: 4rem;
+            padding: 2.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .method h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #2196F3;
+        }
+
+        .method-signature {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .parameter-list {
+            margin: 1.5rem 0;
+        }
+
+        .parameter {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .parameter-name {
+            font-weight: 600;
+            color: #2196F3;
+            font-size: 1.1rem;
+        }
+
+        .parameter-type {
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #666;
+            margin-left: 0.5rem;
+        }
+
+        .example {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .example pre {
+            margin: 0;
+        }
+
+        .warning {
+            background: rgba(255, 152, 0, 0.1);
+            border-left: 4px solid #FF9800;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .note {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Back link styling */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .back-link:hover {
+            background-color: #1976D2;
+        }
+
+        /* Header styling */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            color: #2196F3;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .content {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .api-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-link">← Back to Documentation</a>
+
+    <header>
+        <h1>API Documentation</h1>
+        <p>Complete API reference for the GAOS Event System package</p>
+    </header>
+
+    <div class="api-container">
+        <nav class="sidebar">
+            <div class="sidebar-nav">
+                <h3>Core Interfaces</h3>
+                <ul>
+                    <li><div class="nav-item"><a href="#idatainterface">IDataInterface</a></div></li>
+                    <li><div class="nav-item"><a href="#ieventsystem">IEventSystem</a></div></li>
+                </ul>
+
+                <h3>Event Registration</h3>
+                <ul>
+                    <li><div class="nav-item"><a href="#registerevent">RegisterEvent</a></div></li>
+                    <li><div class="nav-item"><a href="#registerevent-t">RegisterEvent&lt;T&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#registerevent-t-r">RegisterEvent&lt;T,R&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#iseventregistered">IsEventRegistered</a></div></li>
+                </ul>
+
+                <h3>Event Subscription</h3>
+                <ul>
+                    <li><div class="nav-item"><a href="#subscribe">Subscribe</a></div></li>
+                    <li><div class="nav-item"><a href="#subscribe-t">Subscribe&lt;T&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#subscribe-r">Subscribe&lt;R&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#subscribe-t-r">Subscribe&lt;T,R&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#unsubscribe">Unsubscribe</a></div></li>
+                    <li><div class="nav-item"><a href="#unsubscribe-t">Unsubscribe&lt;T&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#unsubscribe-r">Unsubscribe&lt;R&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#unsubscribe-t-r">Unsubscribe&lt;T,R&gt;</a></div></li>
+                </ul>
+
+                <h3>Event Triggering</h3>
+                <ul>
+                    <li><div class="nav-item"><a href="#triggerevent">TriggerEvent</a></div></li>
+                    <li><div class="nav-item"><a href="#triggerevent-t">TriggerEvent&lt;T&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#triggereventasync-r">TriggerEventAsync&lt;R&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#triggereventasync-t-r">TriggerEventAsync&lt;T,R&gt;</a></div></li>
+                </ul>
+
+                <h3>Event Trigger Class</h3>
+                <ul>
+                    <li><div class="nav-item"><a href="#eventtrigger">EventTrigger&lt;T&gt;</a></div></li>
+                </ul>
+
+                <h3>ScriptableObject Classes</h3>
+                <ul>
+                    <li><div class="nav-item"><a href="#soeventbase">SOEventBase&lt;T,R&gt;</a></div></li>
+                    <li><div class="nav-item"><a href="#sovoidvent">SOVoidEvent</a></div></li>
+                    <li><div class="nav-item"><a href="#sodataevent">SODataEvent&lt;T&gt;</a></div></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- Core Interfaces -->
+            <section id="idatainterface" class="method">
+                <h3>IDataInterface</h3>
+                <p>Base interface that all event parameter and return types must implement to ensure type safety.</p>
+
+                <div class="method-signature">public interface IDataInterface
+{
+    // Marker interface - no members required
+}</div>
+
+                <div class="note">
+                    <p>All parameter types and return types for events must implement this interface. This ensures type safety and consistency across the event system.</p>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Define a parameter interface
+public interface IPlayerData : IDataInterface
+{
+    string PlayerName { get; }
+    int Score { get; }
+}
+
+// Implement the interface
+public class PlayerData : IPlayerData
+{
+    public string PlayerName { get; set; }
+    public int Score { get; set; }
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="ieventsystem" class="method">
+                <h3>IEventSystem</h3>
+                <p>Interface for the event system service that handles event registration, subscription, and triggering.</p>
+
+                <div class="method-summary">
+                    <h4>Available Methods</h4>
+                    
+                    <p>The IEventSystem interface provides the following groups of methods:</p>
+                    
+                    <h5>Event Registration</h5>
+                    <ul>
+                        <li><strong>RegisterEvent(string eventName)</strong> - Register a basic event with no parameters or return values</li>
+                        <li><strong>RegisterEvent&lt;T&gt;(string eventName)</strong> - Register an event with parameter type T</li>
+                        <li><strong>RegisterEvent&lt;T,R&gt;(string eventName)</strong> - Register an event with parameter type T and return type R</li>
+                        <li><strong>IsEventRegistered(string eventName)</strong> - Check if an event is already registered</li>
+                    </ul>
+                    
+                    <h5>Event Subscription</h5>
+                    <ul>
+                        <li><strong>Subscribe(string eventName, Action handler, int priority = 0)</strong> - Subscribe to a void event</li>
+                        <li><strong>Subscribe&lt;T&gt;(string eventName, Action&lt;T&gt; handler, int priority = 0)</strong> - Subscribe to an event with parameter T</li>
+                        <li><strong>Subscribe&lt;R&gt;(string eventName, Func&lt;Task&lt;R&gt;&gt; handler, int priority = 0)</strong> - Subscribe to an event that returns value R asynchronously</li>
+                        <li><strong>Subscribe&lt;T,R&gt;(string eventName, Func&lt;T, Task&lt;R&gt;&gt; handler, int priority = 0)</strong> - Subscribe to an event with parameter T that returns value R asynchronously</li>
+                    </ul>
+                    
+                    <h5>Event Unsubscription</h5>
+                    <ul>
+                        <li><strong>Unsubscribe(string eventName, Action handler)</strong> - Unsubscribe from a void event</li>
+                        <li><strong>Unsubscribe&lt;T&gt;(string eventName, Action&lt;T&gt; handler)</strong> - Unsubscribe from an event with parameter T</li>
+                        <li><strong>Unsubscribe&lt;R&gt;(string eventName, Func&lt;Task&lt;R&gt;&gt; handler)</strong> - Unsubscribe from an event that returns value R asynchronously</li>
+                        <li><strong>Unsubscribe&lt;T,R&gt;(string eventName, Func&lt;T, Task&lt;R&gt;&gt; handler)</strong> - Unsubscribe from an event with parameter T that returns value R asynchronously</li>
+                    </ul>
+                    
+                    <h5>Event Triggering</h5>
+                    <ul>
+                        <li><strong>TriggerEvent(string eventName)</strong> - Trigger a void event</li>
+                        <li><strong>TriggerEvent&lt;T&gt;(string eventName, T parameters)</strong> - Trigger an event with parameter T</li>
+                    </ul>
+                    
+                    <h5>Asynchronous Event Triggering</h5>
+                    <ul>
+                        <li><strong>TriggerEventAsync&lt;R&gt;(string eventName)</strong> - Trigger an event asynchronously that returns values of type R</li>
+                        <li><strong>TriggerEventAsync&lt;T,R&gt;(string eventName, T parameters, Func&lt;R, int, int, Task&gt; onListenerCompleted = null)</strong> - Trigger an event asynchronously with parameter T that returns values of type R</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <p>The IEventSystem interface is provided through the ServiceLocator system as "EventSystem". You can access it via:</p>
+                    <pre><code>IEventSystem eventSystem = ServiceLocator.GetService&lt;IEventSystem&gt;("EventSystem");</code></pre>
+                </div>
+            </section>
+
+            <!-- Event Registration Methods -->
+            <section id="registerevent" class="method">
+                <h3>RegisterEvent</h3>
+                <p>Registers a basic event with no parameters or return values.</p>
+
+                <div class="method-signature">void RegisterEvent(string eventName)</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Unique name for the event</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Register a simple void event
+eventSystem.RegisterEvent("OnGameStart");</code></pre>
+                </div>
+            </section>
+
+            <section id="registerevent-t" class="method">
+                <h3>RegisterEvent&lt;T&gt;</h3>
+                <p>Registers an event with parameter type T.</p>
+
+                <div class="method-signature">void RegisterEvent&lt;T&gt;(string eventName) where T : IDataInterface</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Unique name for the event</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">T</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The parameter type that this event will use. Must implement IDataInterface.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Register an event with parameter type
+eventSystem.RegisterEvent&lt;IPlayerData&gt;("OnScoreChanged");</code></pre>
+                </div>
+                
+                <div class="warning">
+                    <p>The parameter type must be an interface that implements IDataInterface, not a concrete class.</p>
+                </div>
+            </section>
+
+            <section id="registerevent-t-r" class="method">
+                <h3>RegisterEvent&lt;T,R&gt;</h3>
+                <p>Registers an event with parameter type T and return type R.</p>
+
+                <div class="method-signature">void RegisterEvent&lt;T, R&gt;(string eventName) 
+    where T : IDataInterface 
+    where R : IDataInterface</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Unique name for the event</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">T</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The parameter type that this event will use. Must implement IDataInterface.</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">R</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The return type that this event will use. Must implement IDataInterface.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Register an event with parameter and return types
+eventSystem.RegisterEvent&lt;IPlayerData, IValidationResult&gt;("ValidateScore");</code></pre>
+                </div>
+                
+                <div class="warning">
+                    <p>Both types must be interfaces that implement IDataInterface, not concrete classes.</p>
+                </div>
+            </section>
+
+            <section id="iseventregistered" class="method">
+                <h3>IsEventRegistered</h3>
+                <p>Checks if an event with the specified name is already registered.</p>
+
+                <div class="method-signature">bool IsEventRegistered(string eventName)</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to check</p>
+                    </div>
+                </div>
+
+                <div class="parameter-list">
+                    <h4>Returns</h4>
+                    <div class="parameter">
+                        <span class="parameter-type">bool</span>
+                        <p>True if the event is registered, false otherwise</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Check if event exists before registering
+if (!eventSystem.IsEventRegistered("OnGameStart")) {
+    eventSystem.RegisterEvent("OnGameStart");
+}
+
+// Or use it for error handling
+if (!eventSystem.IsEventRegistered("OnScoreChanged")) {
+    Debug.LogError("Required event 'OnScoreChanged' is not registered!");
+    return;
+}
+</code></pre>
+                </div>
+            </section>
+
+            <!-- Event Subscription Methods -->
+            <section id="subscribe" class="method">
+                <h3>Subscribe</h3>
+                <p>Subscribes a handler to a void event with no parameters or return values.</p>
+
+                <div class="method-signature">void Subscribe(string eventName, Action handler, int priority = 0)</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to subscribe to</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">handler</span>
+                        <span class="parameter-type">Action</span>
+                        <p>Callback function to invoke when the event is triggered</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">priority</span>
+                        <span class="parameter-type">int</span>
+                        <p>Execution priority of this handler (higher values execute first)</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Subscribe to a void event
+eventSystem.Subscribe("OnGameStart", () => {
+    Debug.Log("Game has started!");
+}, 10);  // Higher priority, will execute before handlers with lower priority</code></pre>
+                </div>
+            </section>
+
+            <section id="subscribe-t" class="method">
+                <h3>Subscribe&lt;T&gt;</h3>
+                <p>Subscribes a handler to an event with parameter type T.</p>
+
+                <div class="method-signature">void Subscribe&lt;T&gt;(string eventName, Action&lt;T&gt; handler, int priority = 0) where T : IDataInterface</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to subscribe to</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">handler</span>
+                        <span class="parameter-type">Action&lt;T&gt;</span>
+                        <p>Callback function that accepts a parameter of type T</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">priority</span>
+                        <span class="parameter-type">int</span>
+                        <p>Execution priority of this handler (higher values execute first)</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">T</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The parameter type that this event uses. Must implement IDataInterface.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Subscribe to an event with parameter
+eventSystem.Subscribe&lt;IPlayerData&gt;("OnScoreChanged", (playerData) => {
+    UI.UpdateScore(playerData.Score);
+    Debug.Log($"Player {playerData.PlayerName} score changed to {playerData.Score}");
+});</code></pre>
+                </div>
+            </section>
+
+            <section id="subscribe-r" class="method">
+                <h3>Subscribe&lt;R&gt;</h3>
+                <p>Subscribes a handler to an event that returns a value of type R asynchronously.</p>
+
+                <div class="method-signature">void Subscribe&lt;R&gt;(string eventName, Func&lt;Task&lt;R&gt;&gt; handler, int priority = 0) where R : IDataInterface</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to subscribe to</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">handler</span>
+                        <span class="parameter-type">Func&lt;Task&lt;R&gt;&gt;</span>
+                        <p>Async callback function that returns a Task with result of type R</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">priority</span>
+                        <span class="parameter-type">int</span>
+                        <p>Execution priority of this handler (higher values execute first)</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">R</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The return type for this event handler. Must implement IDataInterface.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Subscribe to an event that returns a value asynchronously
+eventSystem.Subscribe&lt;IValidationResult&gt;("ValidateInput", async () => {
+    // Perform async validation logic
+    await Task.Delay(100); // Simulate some network or disk operation
+    return new ValidationResult { 
+        IsValid = true, 
+        Message = "Validation successful" 
+    };
+});</code></pre>
+                </div>
+            </section>
+
+            <section id="subscribe-t-r" class="method">
+                <h3>Subscribe&lt;T,R&gt;</h3>
+                <p>Subscribes a handler to an event with parameter type T and that returns a value of type R asynchronously.</p>
+
+                <div class="method-signature">void Subscribe&lt;T, R&gt;(string eventName, Func&lt;T, Task&lt;R&gt;&gt; handler, int priority = 0) 
+    where T : IDataInterface 
+    where R : IDataInterface</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to subscribe to</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">handler</span>
+                        <span class="parameter-type">Func&lt;T, Task&lt;R&gt;&gt;</span>
+                        <p>Async callback function that accepts a parameter of type T and returns a Task with result of type R</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">priority</span>
+                        <span class="parameter-type">int</span>
+                        <p>Execution priority of this handler (higher values execute first)</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">T</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The parameter type for this event handler. Must implement IDataInterface.</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">R</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The return type for this event handler. Must implement IDataInterface.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Subscribe to an event with parameter and async return value
+eventSystem.Subscribe&lt;IPlayerData, IValidationResult&gt;("ValidateScore", async (playerData) => {
+    // Perform async validation logic
+    await Task.Delay(100); // Simulate validation work
+    var isValid = playerData.Score >= 0 && playerData.Score <= 1000;
+    return new ValidationResult { 
+        IsValid = isValid, 
+        Message = isValid ? "Score is valid" : "Score must be between 0 and 1000" 
+    };
+});</code></pre>
+                </div>
+            </section>
+
+            <section id="unsubscribe" class="method">
+                <h3>Unsubscribe</h3>
+                <p>Unsubscribes a void event handler from an event.</p>
+
+                <div class="method-signature">void Unsubscribe(string eventName, Action handler)</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to unsubscribe from</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">handler</span>
+                        <span class="parameter-type">Action</span>
+                        <p>The handler to unsubscribe (must be the same instance that was used to subscribe)</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Define a handler
+Action onGameStartHandler = () => { Debug.Log("Game has started!"); };
+
+// Subscribe to an event
+eventSystem.Subscribe("OnGameStart", onGameStartHandler);
+
+// Later, unsubscribe from the event
+eventSystem.Unsubscribe("OnGameStart", onGameStartHandler);</code></pre>
+                </div>
+
+                <div class="warning">
+                    <p>You must unsubscribe using the same handler instance that was used to subscribe. Anonymous lambda expressions create new instances each time, so store your handlers in variables if you need to unsubscribe later.</p>
+                </div>
+            </section>
+
+            <section id="unsubscribe-t" class="method">
+                <h3>Unsubscribe&lt;T&gt;</h3>
+                <p>Unsubscribes a handler for an event with parameter type T.</p>
+
+                <div class="method-signature">void Unsubscribe&lt;T&gt;(string eventName, Action&lt;T&gt; handler)</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to unsubscribe from</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">handler</span>
+                        <span class="parameter-type">Action&lt;T&gt;</span>
+                        <p>The handler to unsubscribe (must be the same instance that was used to subscribe)</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Define a handler with parameters
+Action&lt;IPlayerData&gt; scoreChangedHandler = (playerData) => {
+    UI.UpdateScore(playerData.Score);
+};
+
+// Subscribe to an event
+eventSystem.Subscribe&lt;IPlayerData&gt;("OnScoreChanged", scoreChangedHandler);
+
+// Later, unsubscribe from the event
+eventSystem.Unsubscribe&lt;IPlayerData&gt;("OnScoreChanged", scoreChangedHandler);</code></pre>
+                </div>
+            </section>
+
+            <section id="unsubscribe-r" class="method">
+                <h3>Unsubscribe&lt;R&gt;</h3>
+                <p>Unsubscribes a handler for an event that returns a value of type R asynchronously.</p>
+
+                <div class="method-signature">void Unsubscribe&lt;R&gt;(string eventName, Func&lt;Task&lt;R&gt;&gt; handler)</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to unsubscribe from</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">handler</span>
+                        <span class="parameter-type">Func&lt;Task&lt;R&gt;&gt;</span>
+                        <p>The handler to unsubscribe (must be the same instance that was used to subscribe)</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Define an async handler that returns a value
+Func&lt;Task&lt;IValidationResult&gt;&gt; validationHandler = async () => {
+    await Task.Delay(100); // Simulate work
+    return new ValidationResult { IsValid = true };
+};
+
+// Subscribe to an event
+eventSystem.Subscribe&lt;IValidationResult&gt;("ValidateInput", validationHandler);
+
+// Later, unsubscribe from the event
+eventSystem.Unsubscribe&lt;IValidationResult&gt;("ValidateInput", validationHandler);</code></pre>
+                </div>
+            </section>
+
+            <section id="unsubscribe-t-r" class="method">
+                <h3>Unsubscribe&lt;T,R&gt;</h3>
+                <p>Unsubscribes a handler for an event with parameter type T that returns a value of type R asynchronously.</p>
+
+                <div class="method-signature">void Unsubscribe&lt;T, R&gt;(string eventName, Func&lt;T, Task&lt;R&gt;&gt; handler)</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to unsubscribe from</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">handler</span>
+                        <span class="parameter-type">Func&lt;T, Task&lt;R&gt;&gt;</span>
+                        <p>The handler to unsubscribe (must be the same instance that was used to subscribe)</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Define an async handler with parameters that returns a value
+Func&lt;IPlayerData, Task&lt;IValidationResult&gt;&gt; scoreValidationHandler = async (playerData) => {
+    await Task.Delay(100); // Simulate validation work
+    var isValid = playerData.Score >= 0 && playerData.Score <= 1000;
+    return new ValidationResult { 
+        IsValid = isValid, 
+        Message = isValid ? "Score is valid" : "Score must be between 0 and 1000" 
+    };
+};
+
+// Subscribe to an event
+eventSystem.Subscribe&lt;IPlayerData, IValidationResult&gt;("ValidateScore", scoreValidationHandler);
+
+// Later, unsubscribe from the event
+eventSystem.Unsubscribe&lt;IPlayerData, IValidationResult&gt;("ValidateScore", scoreValidationHandler);</code></pre>
+                </div>
+            </section>
+
+            <!-- Event Triggering Methods -->
+            <section id="triggerevent" class="method">
+                <h3>TriggerEvent</h3>
+                <p>Triggers a basic event with no parameters or return values.</p>
+
+                <div class="method-signature">void TriggerEvent(string eventName)</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to trigger</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Trigger a simple void event
+eventSystem.TriggerEvent("OnGameStart");</code></pre>
+                </div>
+            </section>
+
+            <section id="triggerevent-t" class="method">
+                <h3>TriggerEvent&lt;T&gt;</h3>
+                <p>Triggers an event with parameter type T.</p>
+
+                <div class="method-signature">void TriggerEvent&lt;T&gt;(string eventName, T parameters) where T : IDataInterface</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to trigger</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">parameters</span>
+                        <span class="parameter-type">T</span>
+                        <p>The parameters to pass to the event</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">T</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The parameter type that this event uses. Must implement IDataInterface.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Trigger an event with parameter
+eventSystem.TriggerEvent&lt;IPlayerData&gt;("OnScoreChanged", new PlayerData { PlayerName = "Player1", Score = 100 });</code></pre>
+                </div>
+            </section>
+
+            <section id="triggereventasync-r" class="method">
+                <h3>TriggerEventAsync&lt;R&gt;</h3>
+                <p>Triggers an event asynchronously and returns an EventTrigger&lt;R&gt;.</p>
+
+                <div class="method-signature">Task&lt;EventTrigger&lt;R&gt;&gt; TriggerEventAsync&lt;R&gt;(string eventName) where R : IDataInterface</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to trigger</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">R</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The return type for this event handler. Must implement IDataInterface.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Trigger an event asynchronously and get EventTrigger
+var trigger = await eventSystem.TriggerEventAsync&lt;IValidationResult&gt;("ValidateInput");</code></pre>
+                </div>
+            </section>
+
+            <section id="triggereventasync-t-r" class="method">
+                <h3>TriggerEventAsync&lt;T,R&gt;</h3>
+                <p>Triggers an event asynchronously with parameter type T and returns an EventTrigger&lt;R&gt;.</p>
+
+                <div class="method-signature">Task&lt;EventTrigger&lt;R&gt;&gt; TriggerEventAsync&lt;T, R&gt;(string eventName, T parameters, Func&lt;R, int, int, Task&gt; onListenerCompleted = null) 
+    where T : IDataInterface 
+    where R : IDataInterface</div>
+
+                <div class="parameter-list">
+                    <h4>Parameters</h4>
+                    <div class="parameter">
+                        <span class="parameter-name">eventName</span>
+                        <span class="parameter-type">string</span>
+                        <p>Name of the event to trigger</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">parameters</span>
+                        <span class="parameter-type">T</span>
+                        <p>The parameters to pass to the event</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">onListenerCompleted</span>
+                        <span class="parameter-type">Func&lt;R, int, int, Task&gt;</span>
+                        <p>Callback function to execute when a listener completes</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">T</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The parameter type for this event handler. Must implement IDataInterface.</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">R</span>
+                        <span class="parameter-type">type parameter</span>
+                        <p>The return type for this event handler. Must implement IDataInterface.</p>
+                    </div>
+                </div>
+
+                <div class="example">
+                    <h4>Example:</h4>
+                    <pre><code>// Trigger an event asynchronously with parameter and get EventTrigger
+var trigger = await eventSystem.TriggerEventAsync&lt;IPlayerData, IValidationResult&gt;("ValidateScore", new PlayerData { PlayerName = "Player1", Score = 100 }, (result, index, total) => {
+    // Handle listener completion
+    Debug.Log($"Validation result: {result.IsValid}");
+});</code></pre>
+                </div>
+            </section>
+
+            <!-- Just a few examples for Event Trigger class -->
+            <section id="eventtrigger" class="method">
+                <h3>EventTrigger&lt;T&gt;</h3>
+                <p>Represents an ongoing event execution and provides access to its status and results.</p>
+
+                <div class="method-summary">
+                    <h4>Available Properties and Methods</h4>
+                    
+                    <h5>Task Management</h5>
+                    <ul>
+                        <li><strong>Task</strong> - The task that completes when all listeners have finished, returning all results</li>
+                        <li><strong>CancellationToken</strong> - Cancellation token for this event trigger</li>
+                        <li><strong>Cancel()</strong> - Cancels the event execution</li>
+                    </ul>
+                    
+                    <h5>Status Properties</h5>
+                    <ul>
+                        <li><strong>CompletedCount</strong> - Number of listeners that have completed</li>
+                        <li><strong>TotalListeners</strong> - Total number of listeners</li>
+                        <li><strong>IsCompleted</strong> - Whether all listeners have completed (CompletedCount == TotalListeners)</li>
+                    </ul>
+                    
+                    <h5>Results</h5>
+                    <ul>
+                        <li><strong>CompletedResults</strong> - Collection of results from completed listeners</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <p>The EventTrigger class is returned when calling TriggerEventAsync methods. It provides a way to track the progress of event execution and access results as they become available.</p>
+                </div>
+
+                <div class="example">
+                    <h4>Example usage:</h4>
+                    <pre><code>// Trigger event and get EventTrigger
+var trigger = await eventSystem.TriggerEventAsync&lt;IPlayerData, IValidationResult&gt;(
+    "ValidateScore", 
+    new PlayerData { PlayerName = "Player1", Score = 100 }
+);
+
+// Check progress
+Debug.Log($"Completed: {trigger.CompletedCount}/{trigger.TotalListeners}");
+
+// Wait for all results
+IReadOnlyList&lt;IValidationResult&gt; results = await trigger.Task;
+
+// Process results
+foreach (var result in results) {
+    Debug.Log($"Validation result: {result.IsValid}");
+}</code></pre>
+                </div>
+            </section>
+            
+            <!-- ScriptableObject Classes -->
+            <section id="soeventbase" class="method">
+                <h3>SOEventBase&lt;T,R&gt;</h3>
+                <p>Base ScriptableObject class for creating custom event types with parameter and return values.</p>
+
+                <div class="method-summary">
+                    <h4>Available Properties and Methods</h4>
+                    
+                    <h5>Properties</h5>
+                    <ul>
+                        <li><strong>EventName</strong> - The name of this event</li>
+                        <li><strong>Description</strong> - Human-readable description of this event</li>
+                    </ul>
+                    
+                    <h5>Event Raising Methods</h5>
+                    <ul>
+                        <li><strong>Raise()</strong> - Raise the event with no parameters</li>
+                        <li><strong>Raise(T parameter)</strong> - Raise the event with parameter T</li>
+                        <li><strong>RaiseAsync()</strong> - Raise the event asynchronously with no parameters</li>
+                        <li><strong>RaiseAsync(T parameter)</strong> - Raise the event asynchronously with parameter T</li>
+                    </ul>
+                    
+                    <h5>Subscription Methods</h5>
+                    <ul>
+                        <li><strong>Subscribe(Action handler, int priority = 0)</strong> - Subscribe to this event with no parameters or return value</li>
+                        <li><strong>Subscribe(Action&lt;T&gt; handler, int priority = 0)</strong> - Subscribe to this event with parameter T</li>
+                        <li><strong>Subscribe(Func&lt;R&gt; handler, int priority = 0)</strong> - Subscribe to this event with return value R</li>
+                        <li><strong>Subscribe(Func&lt;T, R&gt; handler, int priority = 0)</strong> - Subscribe to this event with parameter T and return value R</li>
+                        <li><strong>Subscribe(Func&lt;Task&lt;R&gt;&gt; handler, int priority = 0)</strong> - Subscribe to this event with async return value R</li>
+                        <li><strong>Subscribe(Func&lt;T, Task&lt;R&gt;&gt; handler, int priority = 0)</strong> - Subscribe to this event with parameter T and async return value R</li>
+                    </ul>
+                    
+                    <h5>Unsubscription Methods</h5>
+                    <ul>
+                        <li><strong>Unsubscribe(Action handler)</strong> - Unsubscribe from this event with no parameters or return value</li>
+                        <li><strong>Unsubscribe(Action&lt;T&gt; handler)</strong> - Unsubscribe from this event with parameter T</li>
+                        <li><strong>Unsubscribe(Func&lt;R&gt; handler)</strong> - Unsubscribe from this event with return value R</li>
+                        <li><strong>Unsubscribe(Func&lt;T, R&gt; handler)</strong> - Unsubscribe from this event with parameter T and return value R</li>
+                        <li><strong>Unsubscribe(Func&lt;Task&lt;R&gt;&gt; handler)</strong> - Unsubscribe from this event with async return value R</li>
+                        <li><strong>Unsubscribe(Func&lt;T, Task&lt;R&gt;&gt; handler)</strong> - Unsubscribe from this event with parameter T and async return value R</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <p>SOEventBase is the base class for all ScriptableObject-based events. It wraps the event system and provides strongly-typed access to events. This class is primarily used to derive more specific event types.</p>
+                </div>
+
+                <div class="example">
+                    <h4>Example usage:</h4>
+                    <pre><code>// Create a custom event type
+[CreateAssetMenu(fileName = "PlayerEvent", menuName = "GAOS/Events/Player Event")]
+public class PlayerEvent : SOEventBase&lt;IPlayerData, IPlayerResult&gt;
+{
+    // No additional code needed - inherits all functionality
+}
+
+// Using the event
+[SerializeField] private PlayerEvent playerEvent;
+
+public async void ValidatePlayer(Player player)
+{
+    var data = new PlayerData { Name = player.name, Score = player.score };
+    var trigger = await playerEvent.RaiseAsync(data);
+    
+    var results = await trigger.Task;
+    // Process results here
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="sovoidvent" class="method">
+                <h3>SOVoidEvent</h3>
+                <p>A ScriptableObject event with no parameters or return values, for simple notifications.</p>
+
+                <div class="method-summary">
+                    <p>Inherits from <code>SOEventBase&lt;IDataInterface, IDataInterface&gt;</code></p>
+                    
+                    <p>This class inherits all functionality from SOEventBase but specializes it for void events with no parameters or return values. The most commonly used methods are:</p>
+                    
+                    <h5>Commonly Used Methods</h5>
+                    <ul>
+                        <li><strong>Raise()</strong> - Trigger the event with no parameters</li>
+                        <li><strong>Subscribe(Action handler, int priority = 0)</strong> - Subscribe to this event</li>
+                        <li><strong>Unsubscribe(Action handler)</strong> - Unsubscribe from this event</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <p>SOVoidEvent is used for simple notification events that don't need to pass any data. It's the simplest form of ScriptableObject event and is commonly used for game state changes, notifications, and triggers.</p>
+                </div>
+
+                <div class="example">
+                    <h4>Example usage:</h4>
+                    <pre><code>// Create a notification event
+[CreateAssetMenu(fileName = "GameStartEvent", menuName = "GAOS/Events/Game Start Event")]
+public class GameStartEvent : SOVoidEvent
+{
+    // No additional code needed - inherits all functionality
+}
+
+// Using the event
+[SerializeField] private GameStartEvent gameStartEvent;
+
+public void StartGame()
+{
+    // Raise the event with no parameters
+    gameStartEvent.Raise();
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="sodataevent" class="method">
+                <h3>SODataEvent&lt;T&gt;</h3>
+                <p>A ScriptableObject event that passes data but doesn't expect a return value.</p>
+
+                <div class="method-summary">
+                    <p>Inherits from <code>SOEventBase&lt;T, IDataInterface&gt;</code> where T is the parameter type</p>
+                    
+                    <p>This class inherits all functionality from SOEventBase but specializes it for events that take parameters but don't return values. The most commonly used methods are:</p>
+                    
+                    <h5>Commonly Used Methods</h5>
+                    <ul>
+                        <li><strong>Raise(T parameter)</strong> - Trigger the event with parameter of type T</li>
+                        <li><strong>Subscribe(Action&lt;T&gt; handler, int priority = 0)</strong> - Subscribe to this event with a handler that receives parameter T</li>
+                        <li><strong>Unsubscribe(Action&lt;T&gt; handler)</strong> - Unsubscribe from this event</li>
+                    </ul>
+                </div>
+
+                <div class="note">
+                    <p>SODataEvent is used when you need to pass data to listeners but don't need any results back. It's commonly used for broadcasting status updates, player actions, or other information to multiple listeners.</p>
+                </div>
+
+                <div class="example">
+                    <h4>Example usage:</h4>
+                    <pre><code>// Create a data event for player scores
+[CreateAssetMenu(fileName = "ScoreUpdateEvent", menuName = "GAOS/Events/Score Update Event")]
+public class ScoreUpdateEvent : SODataEvent&lt;IScoreData&gt;
+{
+    // No additional code needed - inherits all functionality
+}
+
+// Using the event
+[SerializeField] private ScoreUpdateEvent scoreUpdateEvent;
+
+public void UpdateScore(int score, string playerName)
+{
+    var scoreData = new ScoreData { Score = score, PlayerName = playerName };
+    scoreUpdateEvent.Raise(scoreData);
+}</code></pre>
+                </div>
+            </section>
+            
+            <!-- Add spacer at the bottom -->
+            <div style="height: 300px;"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p><a href="index.html">Back to Documentation</a> | <a href="quick-start.html">Quick Start Guide</a> | <a href="advanced.html">Advanced Topics</a> | <a href="../CHANGELOG.md">Changelog</a></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.method');
+            const navItems = document.querySelectorAll('.nav-item');
+            const sidebar = document.querySelector('.sidebar');
+
+            function setActiveLink() {
+                let currentSection = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (window.scrollY >= sectionTop - 100) {
+                        currentSection = '#' + section.getAttribute('id');
+                    }
+                });
+
+                navItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.querySelector('a').getAttribute('href') === currentSection) {
+                        item.classList.add('active');
+                        
+                        // Make sure the active item is visible in the sidebar
+                        if (sidebar) {
+                            const activeItem = item;
+                            const activeItemRect = activeItem.getBoundingClientRect();
+                            const sidebarRect = sidebar.getBoundingClientRect();
+                            
+                            // Check if the active item is outside the visible area of the sidebar
+                            if (activeItemRect.top < sidebarRect.top || 
+                                activeItemRect.bottom > sidebarRect.bottom) {
+                                // Scroll to make the active item visible
+                                const scrollOffset = activeItemRect.top - sidebarRect.top - sidebarRect.height / 2 + activeItemRect.height / 2;
+                                sidebar.scrollTop += scrollOffset;
+                            }
+                        }
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', setActiveLink);
+            setActiveLink();
+
+            // Smooth scroll to section when clicking nav items
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const link = item.querySelector('a');
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

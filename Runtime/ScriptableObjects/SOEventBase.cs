@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using UnityEngine;
 using GAOS.ServiceLocator;
+using GAOS.Logger;
 
 namespace GAOS.EventSystem.ScriptableObjects
 {
@@ -86,6 +87,7 @@ namespace GAOS.EventSystem.ScriptableObjects
         public virtual void Raise()
         {
             RegisterEventIfNeeded();
+            GLog.Info<EventSystem>($"SOEvent: Raising event '{eventName}' (no parameters, no return value)");
             EventSystem.TriggerEvent(eventName);
         }
 
@@ -95,6 +97,7 @@ namespace GAOS.EventSystem.ScriptableObjects
         public virtual void Raise(T parameter)
         {
             RegisterEventIfNeeded();
+            GLog.Info<EventSystem>($"SOEvent: Raising event '{eventName}' with parameter");
             EventSystem.TriggerEvent(eventName, parameter);
         }
 
@@ -104,6 +107,7 @@ namespace GAOS.EventSystem.ScriptableObjects
         public virtual async Task<EventTrigger<R>> RaiseAsync()
         {
             RegisterEventIfNeeded();
+            GLog.Info<EventSystem>($"SOEvent: Raising async event '{eventName}' (no parameters)");
             return await EventSystem.TriggerEventAsync<R>(eventName);
         }
 
@@ -113,6 +117,7 @@ namespace GAOS.EventSystem.ScriptableObjects
         public virtual async Task<EventTrigger<R>> RaiseAsync(T parameter)
         {
             RegisterEventIfNeeded();
+            GLog.Info<EventSystem>($"SOEvent: Raising async event '{eventName}' with parameter");
             return await EventSystem.TriggerEventAsync<T, R>(eventName, parameter);
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GAOS.ServiceLocator;
+using GAOS.Logger;
 
 namespace GAOS.EventSystem
 {
@@ -11,20 +12,31 @@ namespace GAOS.EventSystem
     /// Main event system service that handles event registration, subscription, and triggering
     /// </summary>
     [Service(typeof(IEventSystem), "EventSystem", ServiceLifetime.Singleton, ServiceContext.RuntimeAndEditor)]
-    public class EventSystem : IEventSystem
+    public class EventSystem : IEventSystem, ILogSystem
     {
         private readonly ConcurrentDictionary<string, EventRegistration> _events = new();
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<Delegate, int>> _priorities = new();
+
+        public string LogPrefix => "[EventSystem]";
+        public string LogPrefixColor => "#00BFFF";
+
+        public EventSystem()
+        {
+            GLog.RegisterSystem(this);
+            GLog.Info<EventSystem>("Event System initialized");
+        }
 
         #region Registration
         public void RegisterEvent(string eventName)
         {
             _events.TryAdd(eventName, new EventRegistration());
+            GLog.Debug<EventSystem>($"Event registered: {eventName}");
         }
 
         public void RegisterEvent<T>(string eventName) where T : IDataInterface
         {
             _events.TryAdd(eventName, new EventRegistration(typeof(T)));
+            GLog.Debug<EventSystem>($"Event registered with data type {typeof(T).Name}: {eventName}");
         }
 
         public void RegisterEvent<T, R>(string eventName) 
@@ -32,6 +44,7 @@ namespace GAOS.EventSystem
             where R : IDataInterface
         {
             _events.TryAdd(eventName, new EventRegistration(typeof(T), typeof(R)));
+            GLog.Debug<EventSystem>($"Event registered with request-response types {typeof(T).Name}->{typeof(R).Name}: {eventName}");
         }
 
         /// <summary>
@@ -102,6 +115,11 @@ namespace GAOS.EventSystem
                 {
                     priorityMap.TryRemove(handler, out _);
                 }
+                GLog.Debug<EventSystem>($"Removed listener from event: {eventName}");
+            }
+            else
+            {
+                GLog.Warning<EventSystem>($"Attempted to unsubscribe from non-existent event: {eventName}");
             }
         }
         #endregion
@@ -110,9 +128,14 @@ namespace GAOS.EventSystem
         public void TriggerEvent(string eventName)
         {
             if (!_events.TryGetValue(eventName, out var registration))
+            {
+                GLog.Warning<EventSystem>($"Attempted to trigger unregistered event: {eventName}");
                 return;
+            }
 
             var listeners = GetSortedListeners(eventName, registration);
+            GLog.Debug<EventSystem>($"Triggering event {eventName} with {listeners.Count} listeners");
+
             foreach (var listener in listeners)
             {
                 try
@@ -122,7 +145,7 @@ namespace GAOS.EventSystem
                 }
                 catch (Exception ex)
                 {
-                    // Log or handle error
+                    GLog.Error<EventSystem>($"Error executing listener for event {eventName}: {ex.Message}");
                     throw;
                 }
             }
@@ -134,6 +157,7 @@ namespace GAOS.EventSystem
                 return;
 
             var listeners = GetSortedListeners(eventName, registration);
+            GLog.Debug<EventSystem>($"Triggering event {eventName} with {listeners.Count} listeners");
             foreach (var listener in listeners)
             {
                 try
@@ -156,6 +180,7 @@ namespace GAOS.EventSystem
                 return new EventTrigger<R>(0);
 
             var listeners = GetSortedListeners(eventName, registration);
+            GLog.Debug<EventSystem>($"Triggering async event {eventName} with {listeners.Count} listeners");
             var trigger = new EventTrigger<R>(listeners.Count);
 
             foreach (var listener in listeners)
@@ -199,6 +224,7 @@ namespace GAOS.EventSystem
                 return new EventTrigger<R>(0);
 
             var listeners = GetSortedListeners(eventName, registration);
+            GLog.Debug<EventSystem>($"Triggering async event {eventName} with {listeners.Count} listeners");
             var trigger = new EventTrigger<R>(listeners.Count);
 
             for (int i = 0; i < listeners.Count; i++)
@@ -242,13 +268,21 @@ namespace GAOS.EventSystem
         {
             if (!_events.TryGetValue(eventName, out var registration))
             {
-                throw new ArgumentException($"Event {eventName} is not registered", nameof(eventName));
+                GLog.Warning<EventSystem>($"Attempted to subscribe to unregistered event: {eventName}");
+                throw new ArgumentException($"Event {eventName} is not registered");
             }
 
-            registration.AddListener(handler);
-
-            var priorityMap = _priorities.GetOrAdd(eventName, _ => new ConcurrentDictionary<Delegate, int>());
-            priorityMap.TryAdd(handler, priority);
+            try
+            {
+                registration.AddListener(handler);
+                _priorities.GetOrAdd(eventName, _ => new ConcurrentDictionary<Delegate, int>())[handler] = priority;
+                GLog.Debug<EventSystem>($"Added listener to event {eventName} with priority {priority}");
+            }
+            catch (Exception ex)
+            {
+                GLog.Error<EventSystem>($"Failed to add listener to event {eventName}: {ex.Message}");
+                throw;
+            }
         }
 
         private List<Delegate> GetSortedListeners(string eventName, EventRegistration registration)
@@ -271,6 +305,7 @@ namespace GAOS.EventSystem
         {
             _events.Clear();
             _priorities.Clear();
+            GLog.Info<EventSystem>("All events cleared");
         }
         #endregion
     }

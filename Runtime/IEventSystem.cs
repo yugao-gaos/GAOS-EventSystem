@@ -48,10 +48,10 @@ namespace GAOS.EventSystem
         #endregion
 
         #region Triggering
-        void TriggerEvent(string eventName);
-        void TriggerEvent<T>(string eventName, T parameters) where T : IDataInterface;
-        Task<EventTrigger<R>> TriggerEventAsync<R>(string eventName) where R : IDataInterface;
-        Task<EventTrigger<R>> TriggerEventAsync<T, R>(string eventName, T parameters, Func<R, int, int, Task> onListenerCompleted = null) 
+        void TriggerEvent(string eventName, bool autoRegister = false);
+        void TriggerEvent<T>(string eventName, T parameters, bool autoRegister = false) where T : IDataInterface;
+        Task<EventTrigger<R>> TriggerEventAsync<R>(string eventName, bool autoRegister = false) where R : IDataInterface;
+        Task<EventTrigger<R>> TriggerEventAsync<T, R>(string eventName, T parameters, Func<R, int, int, Task> onListenerCompleted = null, bool autoRegister = false) 
             where T : IDataInterface 
             where R : IDataInterface;
         #endregion

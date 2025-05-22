@@ -826,7 +826,7 @@ eventSystem.Unsubscribe&lt;IPlayerData, IValidationResult&gt;("ValidateScore", s
                 <h3>TriggerEvent</h3>
                 <p>Triggers a basic event with no parameters or return values.</p>
 
-                <div class="method-signature">void TriggerEvent(string eventName)</div>
+                <div class="method-signature">void TriggerEvent(string eventName, bool autoRegister = false)</div>
 
                 <div class="parameter-list">
                     <h4>Parameters</h4>
@@ -835,12 +835,20 @@ eventSystem.Unsubscribe&lt;IPlayerData, IValidationResult&gt;("ValidateScore", s
                         <span class="parameter-type">string</span>
                         <p>Name of the event to trigger</p>
                     </div>
+                    <div class="parameter">
+                        <span class="parameter-name">autoRegister</span>
+                        <span class="parameter-type">bool</span>
+                        <p>If true, automatically registers the event if it doesn't exist yet. Default is false.</p>
+                    </div>
                 </div>
 
                 <div class="example">
                     <h4>Example:</h4>
                     <pre><code>// Trigger a simple void event
-eventSystem.TriggerEvent("OnGameStart");</code></pre>
+eventSystem.TriggerEvent("OnGameStart");
+
+// Trigger and auto-register if needed
+eventSystem.TriggerEvent("OnGameStart", true);</code></pre>
                 </div>
             </section>
 
@@ -848,7 +856,7 @@ eventSystem.TriggerEvent("OnGameStart");</code></pre>
                 <h3>TriggerEvent&lt;T&gt;</h3>
                 <p>Triggers an event with parameter type T.</p>
 
-                <div class="method-signature">void TriggerEvent&lt;T&gt;(string eventName, T parameters) where T : IDataInterface</div>
+                <div class="method-signature">void TriggerEvent&lt;T&gt;(string eventName, T parameters, bool autoRegister = false) where T : IDataInterface</div>
 
                 <div class="parameter-list">
                     <h4>Parameters</h4>
@@ -863,6 +871,11 @@ eventSystem.TriggerEvent("OnGameStart");</code></pre>
                         <p>The parameters to pass to the event</p>
                     </div>
                     <div class="parameter">
+                        <span class="parameter-name">autoRegister</span>
+                        <span class="parameter-type">bool</span>
+                        <p>If true, automatically registers the event if it doesn't exist yet. Default is false.</p>
+                    </div>
+                    <div class="parameter">
                         <span class="parameter-name">T</span>
                         <span class="parameter-type">type parameter</span>
                         <p>The parameter type that this event uses. Must implement IDataInterface.</p>
@@ -872,7 +885,10 @@ eventSystem.TriggerEvent("OnGameStart");</code></pre>
                 <div class="example">
                     <h4>Example:</h4>
                     <pre><code>// Trigger an event with parameter
-eventSystem.TriggerEvent&lt;IPlayerData&gt;("OnScoreChanged", new PlayerData { PlayerName = "Player1", Score = 100 });</code></pre>
+eventSystem.TriggerEvent&lt;IPlayerData&gt;("OnScoreChanged", new PlayerData { PlayerName = "Player1", Score = 100 });
+
+// Trigger with auto-registration
+eventSystem.TriggerEvent&lt;IPlayerData&gt;("OnScoreChanged", new PlayerData { PlayerName = "Player1", Score = 100 }, true);</code></pre>
                 </div>
             </section>
 
@@ -880,7 +896,7 @@ eventSystem.TriggerEvent&lt;IPlayerData&gt;("OnScoreChanged", new PlayerData { P
                 <h3>TriggerEventAsync&lt;R&gt;</h3>
                 <p>Triggers an event asynchronously and returns an EventTrigger&lt;R&gt;.</p>
 
-                <div class="method-signature">Task&lt;EventTrigger&lt;R&gt;&gt; TriggerEventAsync&lt;R&gt;(string eventName) where R : IDataInterface</div>
+                <div class="method-signature">Task&lt;EventTrigger&lt;R&gt;&gt; TriggerEventAsync&lt;R&gt;(string eventName, bool autoRegister = false) where R : IDataInterface</div>
 
                 <div class="parameter-list">
                     <h4>Parameters</h4>
@@ -888,6 +904,11 @@ eventSystem.TriggerEvent&lt;IPlayerData&gt;("OnScoreChanged", new PlayerData { P
                         <span class="parameter-name">eventName</span>
                         <span class="parameter-type">string</span>
                         <p>Name of the event to trigger</p>
+                    </div>
+                    <div class="parameter">
+                        <span class="parameter-name">autoRegister</span>
+                        <span class="parameter-type">bool</span>
+                        <p>If true, automatically registers the event if it doesn't exist yet. Default is false.</p>
                     </div>
                     <div class="parameter">
                         <span class="parameter-name">R</span>
@@ -899,7 +920,10 @@ eventSystem.TriggerEvent&lt;IPlayerData&gt;("OnScoreChanged", new PlayerData { P
                 <div class="example">
                     <h4>Example:</h4>
                     <pre><code>// Trigger an event asynchronously and get EventTrigger
-var trigger = await eventSystem.TriggerEventAsync&lt;IValidationResult&gt;("ValidateInput");</code></pre>
+var trigger = await eventSystem.TriggerEventAsync&lt;IValidationResult&gt;("ValidateInput");
+
+// With auto-registration
+var trigger = await eventSystem.TriggerEventAsync&lt;IValidationResult&gt;("ValidateInput", true);</code></pre>
                 </div>
             </section>
 
@@ -907,7 +931,7 @@ var trigger = await eventSystem.TriggerEventAsync&lt;IValidationResult&gt;("Vali
                 <h3>TriggerEventAsync&lt;T,R&gt;</h3>
                 <p>Triggers an event asynchronously with parameter type T and returns an EventTrigger&lt;R&gt;.</p>
 
-                <div class="method-signature">Task&lt;EventTrigger&lt;R&gt;&gt; TriggerEventAsync&lt;T, R&gt;(string eventName, T parameters, Func&lt;R, int, int, Task&gt; onListenerCompleted = null) 
+                <div class="method-signature">Task&lt;EventTrigger&lt;R&gt;&gt; TriggerEventAsync&lt;T, R&gt;(string eventName, T parameters, Func&lt;R, int, int, Task&gt; onListenerCompleted = null, bool autoRegister = false) 
     where T : IDataInterface 
     where R : IDataInterface</div>
 
@@ -929,6 +953,11 @@ var trigger = await eventSystem.TriggerEventAsync&lt;IValidationResult&gt;("Vali
                         <p>Callback function to execute when a listener completes</p>
                     </div>
                     <div class="parameter">
+                        <span class="parameter-name">autoRegister</span>
+                        <span class="parameter-type">bool</span>
+                        <p>If true, automatically registers the event if it doesn't exist yet. Default is false.</p>
+                    </div>
+                    <div class="parameter">
                         <span class="parameter-name">T</span>
                         <span class="parameter-type">type parameter</span>
                         <p>The parameter type for this event handler. Must implement IDataInterface.</p>
@@ -943,10 +972,18 @@ var trigger = await eventSystem.TriggerEventAsync&lt;IValidationResult&gt;("Vali
                 <div class="example">
                     <h4>Example:</h4>
                     <pre><code>// Trigger an event asynchronously with parameter and get EventTrigger
-var trigger = await eventSystem.TriggerEventAsync&lt;IPlayerData, IValidationResult&gt;("ValidateScore", new PlayerData { PlayerName = "Player1", Score = 100 }, (result, index, total) => {
-    // Handle listener completion
-    Debug.Log($"Validation result: {result.IsValid}");
-});</code></pre>
+var trigger = await eventSystem.TriggerEventAsync&lt;IPlayerData, IValidationResult&gt;("ValidateScore", 
+    new PlayerData { PlayerName = "Player1", Score = 100 }, 
+    (result, index, total) => {
+        // Handle listener completion
+        Debug.Log($"Validation result: {result.IsValid}");
+    });
+
+// With auto-registration
+var trigger = await eventSystem.TriggerEventAsync&lt;IPlayerData, IValidationResult&gt;("ValidateScore", 
+    new PlayerData { PlayerName = "Player1", Score = 100 }, 
+    null, // No completion callback
+    true); // Auto-register the event</code></pre>
                 </div>
             </section>
 
@@ -1019,10 +1056,10 @@ foreach (var result in results) {
                     
                     <h5>Event Raising Methods</h5>
                     <ul>
-                        <li><strong>Raise()</strong> - Raise the event with no parameters</li>
-                        <li><strong>Raise(T parameter)</strong> - Raise the event with parameter T</li>
-                        <li><strong>RaiseAsync()</strong> - Raise the event asynchronously with no parameters</li>
-                        <li><strong>RaiseAsync(T parameter)</strong> - Raise the event asynchronously with parameter T</li>
+                        <li><strong>Raise(bool autoRegister = true)</strong> - Raise the event with no parameters, optionally auto-registering it</li>
+                        <li><strong>Raise(T parameter, bool autoRegister = true)</strong> - Raise the event with parameter T, optionally auto-registering it</li>
+                        <li><strong>RaiseAsync(bool autoRegister = true)</strong> - Raise the event asynchronously with no parameters, optionally auto-registering it</li>
+                        <li><strong>RaiseAsync(T parameter, bool autoRegister = true)</strong> - Raise the event asynchronously with parameter T, optionally auto-registering it</li>
                     </ul>
                     
                     <h5>Subscription Methods</h5>
@@ -1084,7 +1121,7 @@ public async void ValidatePlayer(Player player)
                     
                     <h5>Commonly Used Methods</h5>
                     <ul>
-                        <li><strong>Raise()</strong> - Trigger the event with no parameters</li>
+                        <li><strong>Raise(bool autoRegister = true)</strong> - Trigger the event with no parameters, optionally auto-registering it</li>
                         <li><strong>Subscribe(Action handler, int priority = 0)</strong> - Subscribe to this event</li>
                         <li><strong>Unsubscribe(Action handler)</strong> - Unsubscribe from this event</li>
                     </ul>
@@ -1125,7 +1162,7 @@ public void StartGame()
                     
                     <h5>Commonly Used Methods</h5>
                     <ul>
-                        <li><strong>Raise(T parameter)</strong> - Trigger the event with parameter of type T</li>
+                        <li><strong>Raise(T parameter, bool autoRegister = true)</strong> - Trigger the event with parameter of type T, optionally auto-registering it</li>
                         <li><strong>Subscribe(Action&lt;T&gt; handler, int priority = 0)</strong> - Subscribe to this event with a handler that receives parameter T</li>
                         <li><strong>Unsubscribe(Action&lt;T&gt; handler)</strong> - Unsubscribe from this event</li>
                     </ul>

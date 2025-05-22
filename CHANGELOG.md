@@ -4,12 +4,19 @@ All notable changes to the GAOS Event System package will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.9.0] - 2024-07-20
+## [0.9.1] - 2025-05-21
+### Added
+- Added `autoRegister` parameter to all `TriggerEvent` methods
+- Option to automatically register events when triggered if not already registered
+- Default behavior preserved: Core system defaults to `autoRegister = false`, ScriptableObject wrappers default to `autoRegister = true`
+- Updated documentation to reflect new parameter options
+
+## [0.9.0] - 2025-05-15
 ### Added
 - Integration with GAOS.Logger package for improved logging capabilities
 - Dependency on com.gaos.logger package
 
-## [0.8.0] - 2024-07-15
+## [0.8.0] - 2025-05-05
 ### Added
 - Initial release of the GAOS Event System
 - Complete implementation of the event system core functionality

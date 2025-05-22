@@ -1,11 +1,11 @@
 {
   "name": "com.gaos.eventsystem",
   "displayName": "GAOS Event System",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "unity": "2021.3",
   "description": "A type-safe event system with synchronous and asynchronous support for Unity.",
   "author": {
-    "name": "YU GAO",
+    "name": "GAOS",
     "email": "yu.gao@gaos.ca",
     "url": "https://gaos.ca"
   },

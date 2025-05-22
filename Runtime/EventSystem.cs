@@ -125,12 +125,21 @@ namespace GAOS.EventSystem
         #endregion
 
         #region Triggering
-        public void TriggerEvent(string eventName)
+        public void TriggerEvent(string eventName, bool autoRegister = false)
         {
             if (!_events.TryGetValue(eventName, out var registration))
             {
-                GLog.Warning<EventSystem>($"Attempted to trigger unregistered event: {eventName}");
-                return;
+                if (autoRegister)
+                {
+                    RegisterEvent(eventName);
+                    _events.TryGetValue(eventName, out registration);
+                    GLog.Info<EventSystem>($"Auto-registered event: {eventName}");
+                }
+                else
+                {
+                    GLog.Warning<EventSystem>($"Attempted to trigger unregistered event: {eventName}");
+                    return;
+                }
             }
 
             var listeners = GetSortedListeners(eventName, registration);
@@ -151,10 +160,22 @@ namespace GAOS.EventSystem
             }
         }
 
-        public void TriggerEvent<T>(string eventName, T parameters) where T : IDataInterface
+        public void TriggerEvent<T>(string eventName, T parameters, bool autoRegister = false) where T : IDataInterface
         {
             if (!_events.TryGetValue(eventName, out var registration))
-                return;
+            {
+                if (autoRegister)
+                {
+                    RegisterEvent<T>(eventName);
+                    _events.TryGetValue(eventName, out registration);
+                    GLog.Info<EventSystem>($"Auto-registered event with parameter type {typeof(T).Name}: {eventName}");
+                }
+                else
+                {
+                    GLog.Warning<EventSystem>($"Attempted to trigger unregistered event: {eventName}");
+                    return;
+                }
+            }
 
             var listeners = GetSortedListeners(eventName, registration);
             GLog.Debug<EventSystem>($"Triggering event {eventName} with {listeners.Count} listeners");
@@ -167,17 +188,29 @@ namespace GAOS.EventSystem
                 }
                 catch (Exception ex)
                 {
-                    // Log or handle error
+                    GLog.Error<EventSystem>($"Error executing listener for event {eventName}: {ex.Message}");
                     throw;
                 }
             }
         }
 
-        public async Task<EventTrigger<R>> TriggerEventAsync<R>(string eventName) 
+        public async Task<EventTrigger<R>> TriggerEventAsync<R>(string eventName, bool autoRegister = false) 
             where R : IDataInterface
         {
             if (!_events.TryGetValue(eventName, out var registration))
-                return new EventTrigger<R>(0);
+            {
+                if (autoRegister)
+                {
+                    RegisterEvent<R>(eventName);
+                    _events.TryGetValue(eventName, out registration);
+                    GLog.Info<EventSystem>($"Auto-registered event with return type {typeof(R).Name}: {eventName}");
+                }
+                else
+                {
+                    GLog.Warning<EventSystem>($"Attempted to trigger unregistered event: {eventName}");
+                    return new EventTrigger<R>(0);
+                }
+            }
 
             var listeners = GetSortedListeners(eventName, registration);
             GLog.Debug<EventSystem>($"Triggering async event {eventName} with {listeners.Count} listeners");
@@ -216,12 +249,25 @@ namespace GAOS.EventSystem
         public async Task<EventTrigger<R>> TriggerEventAsync<T, R>(
             string eventName, 
             T parameters,
-            Func<R, int, int, Task> onListenerCompleted = null) 
+            Func<R, int, int, Task> onListenerCompleted = null,
+            bool autoRegister = false) 
             where T : IDataInterface 
             where R : IDataInterface
         {
             if (!_events.TryGetValue(eventName, out var registration))
-                return new EventTrigger<R>(0);
+            {
+                if (autoRegister)
+                {
+                    RegisterEvent<T, R>(eventName);
+                    _events.TryGetValue(eventName, out registration);
+                    GLog.Info<EventSystem>($"Auto-registered event with parameter-return types {typeof(T).Name}->{typeof(R).Name}: {eventName}");
+                }
+                else
+                {
+                    GLog.Warning<EventSystem>($"Attempted to trigger unregistered event: {eventName}");
+                    return new EventTrigger<R>(0);
+                }
+            }
 
             var listeners = GetSortedListeners(eventName, registration);
             GLog.Debug<EventSystem>($"Triggering async event {eventName} with {listeners.Count} listeners");

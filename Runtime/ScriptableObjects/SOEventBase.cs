@@ -84,41 +84,79 @@ namespace GAOS.EventSystem.ScriptableObjects
         /// <summary>
         /// Raises the event with no parameters and no return value
         /// </summary>
-        public virtual void Raise()
+        /// <param name="autoRegister">If true, automatically register the event if it's not already registered</param>
+        public virtual void Raise(bool autoRegister = true)
         {
-            RegisterEventIfNeeded();
-            GLog.Info<EventSystem>($"SOEvent: Raising event '{eventName}' (no parameters, no return value)");
-            EventSystem.TriggerEvent(eventName);
+            if (autoRegister)
+            {
+                RegisterEventIfNeeded();
+                GLog.Info<EventSystem>($"SOEvent: Raising event '{eventName}' (no parameters, no return value)");
+                EventSystem.TriggerEvent(eventName);
+            }
+            else
+            {
+                GLog.Info<EventSystem>($"SOEvent: Raising event '{eventName}' (no parameters, no return value)");
+                EventSystem.TriggerEvent(eventName, false);
+            }
         }
 
         /// <summary>
         /// Raises the event with parameters but no return value
         /// </summary>
-        public virtual void Raise(T parameter)
+        /// <param name="parameter">The parameter to pass with the event</param>
+        /// <param name="autoRegister">If true, automatically register the event if it's not already registered</param>
+        public virtual void Raise(T parameter, bool autoRegister = true)
         {
-            RegisterEventIfNeeded();
-            GLog.Info<EventSystem>($"SOEvent: Raising event '{eventName}' with parameter");
-            EventSystem.TriggerEvent(eventName, parameter);
+            if (autoRegister)
+            {
+                RegisterEventIfNeeded();
+                GLog.Info<EventSystem>($"SOEvent: Raising event '{eventName}' with parameter");
+                EventSystem.TriggerEvent(eventName, parameter);
+            }
+            else
+            {
+                GLog.Info<EventSystem>($"SOEvent: Raising event '{eventName}' with parameter");
+                EventSystem.TriggerEvent(eventName, parameter, false);
+            }
         }
 
         /// <summary>
         /// Raises the event with no parameters but expects return values
         /// </summary>
-        public virtual async Task<EventTrigger<R>> RaiseAsync()
+        /// <param name="autoRegister">If true, automatically register the event if it's not already registered</param>
+        public virtual async Task<EventTrigger<R>> RaiseAsync(bool autoRegister = true)
         {
-            RegisterEventIfNeeded();
-            GLog.Info<EventSystem>($"SOEvent: Raising async event '{eventName}' (no parameters)");
-            return await EventSystem.TriggerEventAsync<R>(eventName);
+            if (autoRegister)
+            {
+                RegisterEventIfNeeded();
+                GLog.Info<EventSystem>($"SOEvent: Raising async event '{eventName}' (no parameters)");
+                return await EventSystem.TriggerEventAsync<R>(eventName);
+            }
+            else
+            {
+                GLog.Info<EventSystem>($"SOEvent: Raising async event '{eventName}' (no parameters)");
+                return await EventSystem.TriggerEventAsync<R>(eventName, false);
+            }
         }
 
         /// <summary>
         /// Raises the event with parameters and expects return values
         /// </summary>
-        public virtual async Task<EventTrigger<R>> RaiseAsync(T parameter)
+        /// <param name="parameter">The parameter to pass with the event</param>
+        /// <param name="autoRegister">If true, automatically register the event if it's not already registered</param>
+        public virtual async Task<EventTrigger<R>> RaiseAsync(T parameter, bool autoRegister = true)
         {
-            RegisterEventIfNeeded();
-            GLog.Info<EventSystem>($"SOEvent: Raising async event '{eventName}' with parameter");
-            return await EventSystem.TriggerEventAsync<T, R>(eventName, parameter);
+            if (autoRegister)
+            {
+                RegisterEventIfNeeded();
+                GLog.Info<EventSystem>($"SOEvent: Raising async event '{eventName}' with parameter");
+                return await EventSystem.TriggerEventAsync<T, R>(eventName, parameter);
+            }
+            else
+            {
+                GLog.Info<EventSystem>($"SOEvent: Raising async event '{eventName}' with parameter");
+                return await EventSystem.TriggerEventAsync<T, R>(eventName, parameter, null, false);
+            }
         }
 
         /// <summary>
